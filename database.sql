@@ -14,12 +14,22 @@ CREATE TABLE Factories
 (
     FactoryID      INT PRIMARY KEY,
     FactoryName    VARCHAR(255) NOT NULL,
-    FactorySize    ENUM('Small', 'Medium', 'Large') NOT NULL,
+    FactorySize    ENUM('SMALL', 'MEDIUM', 'LARGE') NOT NULL,
     FactoryMobile  VARCHAR(10)  NOT NULL,
     FactoryAddress VARCHAR(255) NOT NULL,
     FactoryEmail   VARCHAR(255) NOT NULL,
     RegionID       INT,
     FOREIGN KEY (RegionID) REFERENCES Regions (RegionID)
+);
+
+-- Table For User Roles
+-- ENUM('ADMIN', 'MANAGER', 'WORKER', 'SUPERVISOR', 'DRIVER', 'TEA_COLLECTOR') NOT NULL,
+CREATE TABLE UserRoles
+(
+    RoleID   INT PRIMARY KEY AUTO_INCREMENT,
+    RoleName VARCHAR(255) NOT NULL,
+    CreationDate DATE NOT NULL,
+    Description VARCHAR(255) NOT NULL
 );
 
 -- Table for Employees
@@ -30,9 +40,10 @@ CREATE TABLE Employees
     JoiningDate  DATE         NOT NULL,
     Email        VARCHAR(255) NOT NULL,
     Mobile       VARCHAR(10)  NOT NULL,
-    Role         ENUM('ADMIN', 'MANAGER', 'WORKER', 'SUPERVISOR', 'DRIVER', 'TEA_COLLECTOR') NOT NULL,
+    RoleID       INT,
     FactoryID    INT,
-    FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID)
+    FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID),
+    FOREIGN KEY (RoleID) REFERENCES UserRoles (RoleID)
 );
 
 -- Table for Customers
