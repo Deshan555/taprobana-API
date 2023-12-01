@@ -10,6 +10,7 @@ const VehicleController = require('../services/VehicleMappingService');
 const DailyTeaCollectionController = require('../services/DailyTeaCollectionService');
 const FieldInfoController = require('../services/FieldInfoService');
 const RoadRoutingController = require('../services/RoadRoutingService');
+const AuthController = require('../services/AuthService');
 
 // main endpoints for customer-Routes
 router.get('/customers', CustomerController.getAllCustomers);
@@ -80,5 +81,9 @@ router.post('/roadRouting/add', RoadRoutingController.addRoadRouting);
 router.get('/roadRouting/:RoadRoutingID', RoadRoutingController.getRoadRoutingByID);
 router.put('/roadRouting/update/:RoadRoutingID', RoadRoutingController.updateRoadRouting);
 router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRoadRouting);
+
+// main endpoints for auth-Routes
+router.post('/auth/customer', AuthController.authCustomer);
+router.post('/auth/employee', AuthController.authEmployee);
 
 module.exports = router;
