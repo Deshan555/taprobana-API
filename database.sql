@@ -40,6 +40,7 @@ CREATE TABLE Employees
     JoiningDate  DATE         NOT NULL,
     Email        VARCHAR(255) NOT NULL,
     Mobile       VARCHAR(10)  NOT NULL,
+    Password     VARCHAR(255) NOT NULL,
     RoleID       INT,
     FactoryID    INT,
     FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID),
@@ -56,7 +57,7 @@ CREATE TABLE Customers
     CustomerEmail   VARCHAR(255) NOT NULL,
     CustomerType    ENUM('STATE_GOV', 'STATE_PRIVATE', 'SMALL_SCALE', 'MEDIUM_SCALE', 'LARGE_SCALE') NOT NULL,
     RegistrationDate DATE NOT NULL,
-    TeaLeavesProvided DECIMAL (10, 2) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
     FactoryID       INT,
     FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID)
 );
