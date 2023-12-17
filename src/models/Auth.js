@@ -14,6 +14,13 @@ const authModel = {
         } catch (error) {
             throw error;
         }
+    },
+    authCustomerWithNewMethod: async (CustomerEmail, Password) => {
+        try {
+            return await query('SELECT * FROM Customers WHERE CustomerEmail = ? AND Password = ?', [CustomerEmail, Password]);
+        } catch (error) {
+            throw error;
+        }
     }
 }
 
