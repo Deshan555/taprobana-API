@@ -10,9 +10,10 @@ const CustomerModel = {
             throw error;
         }
     },
-    addCustomer: async (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, CustomerPassword, FactoryID) => {
+    addCustomer: async (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, CustomerPassword, IdentitiCardNumber, FactoryID) => {
         try {
-            const results = await query('INSERT INTO Customers (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, CustomerPassword, FactoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID]);
+            const results = await query('INSERT INTO Customers (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, Password, IdentitiCardNumber, FactoryID) ' +
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, CustomerPassword, IdentitiCardNumber, FactoryID]);
             return results;
         } catch (error) {
             throw error;
@@ -21,6 +22,15 @@ const CustomerModel = {
     getCustomerByID: async (CustomerID) => {
         try {
             const results = await query('SELECT * FROM Customers WHERE CustomerID = ?', [CustomerID]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getCustomerByIdentitiCardNumber: async (IdentitiCardNumber) => {
+        try {
+            console.log('SELECT * FROM Customers WHERE IdentitiCardNumber = ?', [IdentitiCardNumber]);
+            const results = await query('SELECT * FROM Customers WHERE IdentitiCardNumber = ?', [IdentitiCardNumber]);
             return results;
         } catch (error) {
             throw error;
