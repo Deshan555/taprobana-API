@@ -10,9 +10,9 @@ const CustomerModel = {
             throw error;
         }
     },
-    addCustomer: async (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID) => {
+    addCustomer: async (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, CustomerPassword, FactoryID) => {
         try {
-            const results = await query('INSERT INTO Customers (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID]);
+            const results = await query('INSERT INTO Customers (CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, CustomerPassword, FactoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID]);
             return results;
         } catch (error) {
             throw error;
@@ -21,6 +21,30 @@ const CustomerModel = {
     getCustomerByID: async (CustomerID) => {
         try {
             const results = await query('SELECT * FROM Customers WHERE CustomerID = ?', [CustomerID]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getCustomerByEmail: async (CustomerEmail) => {
+        try {
+            const results = await query('SELECT * FROM Customers WHERE CustomerEmail = ?', [CustomerEmail]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
+    updateCustomerPassword: async (CustomerID, CustomerPassword) => {
+        try {
+            const results = await query('UPDATE Customers SET CustomerPassword = ? WHERE CustomerID = ?', [CustomerPassword, CustomerID]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getCustomerOldPassword: async (CustomerID) => {
+        try {
+            const results = await query('SELECT CustomerPassword FROM Customers WHERE CustomerID = ?', [CustomerID]);
             return results;
         } catch (error) {
             throw error;
