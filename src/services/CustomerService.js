@@ -1,5 +1,6 @@
 const CustomerModel = require('../models/Customers');
 const { successResponse, errorResponse } = require('../utils/responseUtils');
+const {hashPassword} = require('../utils/bcrypt');
 
 const CustomerController = {
     getAllCustomers: async (req, res) => {
@@ -13,13 +14,16 @@ const CustomerController = {
         }
     },
     addCustomer: async (req, res) => {
-        const { CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID } = req.body;
+        const { CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, CustomerPassword, FactoryID } = req.body;
 
-        if (!CustomerID || !CustomerName || !CustomerMobile || !CustomerAddress || !CustomerEmail || !CustomerType || !RegistrationDate || !TeaLeavesProvided || !FactoryID) {
-            return errorResponse(res, 'CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided and FactoryID are required fields', 400);
+        if (!CustomerName || !CustomerMobile || !CustomerAddress || !CustomerEmail || !CustomerType || !CustomerPassword || !FactoryID) {
+            return errorResponse(res, 'CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, Password oF Customer and FactoryID are required fields', 400);
         }
         try {
-            const result = await CustomerModel.addCustomer(CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID);
+            const CustomerID = Math.floor(Math.random() * 1000000000);
+            const RegistrationDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            const hashedPassword = await hashPassword(CustomerPassword);
+            const result = await CustomerModel.addCustomer(CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, hashedPassword, FactoryID);
             successResponse(res, 'Customer added successfully', result);
         } catch (error) {
             console.error('Error adding customer:', error);
