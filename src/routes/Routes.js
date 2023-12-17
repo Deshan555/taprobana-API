@@ -12,10 +12,14 @@ const FieldInfoController = require('../services/FieldInfoService');
 const RoadRoutingController = require('../services/RoadRoutingService');
 const AuthController = require('../services/AuthService');
 
+// demo route list
+router.post('/sample', CustomerController.sampleEndPoint);
+
 // main endpoints for customer-Routes
 router.get('/customers', CustomerController.getAllCustomers);
 router.post('/customers/add', CustomerController.addCustomer);
-router.get('/customers/:CustomerID', CustomerController.getCustomerByID);
+router.get('/customers/getById/:CustomerID', CustomerController.getCustomerByID);
+router.get('/customers/getByEmail/:CustomerEmail', CustomerController.getCustomerByEmail);
 router.put('/customers/update/:CustomerID', CustomerController.updateCustomer);
 router.delete('/customers/drop/:CustomerID', CustomerController.deleteCustomer);
 
