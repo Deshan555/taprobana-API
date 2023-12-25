@@ -1,9 +1,11 @@
-import jwt from "jsonwebtoken";
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 const { successResponse, errorResponse } = require('../utils/responseUtils');
 
-const tokenAuth = (req, res, next) => {
+function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader && authHeader.split(' ')[1]; // token = Bearer <access_token>
+
     if (token === null)
         return errorResponse(res, 'Access Token is required', 401);
     if (token === undefined)
@@ -15,4 +17,7 @@ const tokenAuth = (req, res, next) => {
         next();
     });
 }
-export default tokenAuth;
+
+module.exports = {
+    authenticateToken: authenticateToken
+};
