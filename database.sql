@@ -156,3 +156,20 @@ CREATE TABLE DailyTeaCollection
     FOREIGN KEY (EmployeeID) REFERENCES Employees (EmployeeID)
 );
 
+CREATE TABLE JWTTokensEmployee
+(
+    TokenID INT PRIMARY KEY AUTO_INCREMENT,
+    Token   VARCHAR(255) NOT NULL,
+    RefreshToken VARCHAR(255) NOT NULL,
+    UserID  INT,
+    FOREIGN KEY (UserID) REFERENCES Employees (EmployeeID)
+);
+
+CREATE TABLE JWTTokensCustomer
+(
+    TokenID INT PRIMARY KEY AUTO_INCREMENT,
+    Token   VARCHAR(255) NOT NULL,
+    RefreshToken VARCHAR(255) NOT NULL,
+    UserID  INT,
+    FOREIGN KEY (UserID) REFERENCES Customers (CustomerID)
+);
