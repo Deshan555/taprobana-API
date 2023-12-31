@@ -11,17 +11,19 @@ const DailyTeaCollectionController = require('../services/DailyTeaCollectionServ
 const FieldInfoController = require('../services/FieldInfoService');
 const RoadRoutingController = require('../services/RoadRoutingService');
 const AuthController = require('../services/AuthService');
+const TokenAuth = require('../security/TokenAuth');
 
 // demo route list
 router.post('/sample', CustomerController.sampleEndPoint);
+//router.post('/refresh', TokenAuth.refreshToken);
 
 // main endpoints for customer-Routes
-router.get('/customers', CustomerController.getAllCustomers);
+router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
 router.post('/customers/add', CustomerController.addCustomer);
-router.get('/customers/getById/:CustomerID', CustomerController.getCustomerByID);
-router.get('/customers/getByEmail/:CustomerEmail', CustomerController.getCustomerByEmail);
-router.put('/customers/update/:CustomerID', CustomerController.updateCustomer);
-router.delete('/customers/drop/:CustomerID', CustomerController.deleteCustomer);
+router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken, CustomerController.getCustomerByID);
+router.get('/customers/getByEmail/:CustomerEmail', TokenAuth.authenticateToken, CustomerController.getCustomerByEmail);
+router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken,CustomerController.updateCustomer);
+router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken, CustomerController.deleteCustomer);
 
 // main endpoints for employee-Routes
 router.get('/employees', EmployeeController.getAllEmployees);
@@ -89,5 +91,6 @@ router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRo
 // main endpoints for auth-Routes
 router.post('/auth/customer', AuthController.authCustomer);
 router.post('/auth/employee', AuthController.authEmployee);
+router.post('/auth/refresh', AuthController.newAuthTokenByRefreshTokenCustomer);
 
 module.exports = router;
