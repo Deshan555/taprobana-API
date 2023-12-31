@@ -11,7 +11,8 @@ const RoleModel = {
     },
     addRole: async (RoleName, CreationDate, Description) => {
         try {
-            return await query('INSERT INTO UserRoles (RoleName, CreationDate, Description) VALUES (?, ?, ?)', [RoleName, CreationDate, Description]);
+            return await query('INSERT INTO UserRoles (RoleName, CreationDate, Description) VALUES (?, ?, ?)',
+                [RoleName, CreationDate, Description]);
         } catch (error) {
             throw error;
         }
@@ -23,9 +24,9 @@ const RoleModel = {
             throw error;
         }
     },
-    updateRole: async (RoleID, RoleName, CreationDate, Description) => {
+    updateRole: async (RoleID, RoleName, Description) => {
         try {
-            return await query('UPDATE UserRoles SET RoleName = ?, CreationDate = ?, Description = ? WHERE RoleID = ?', [RoleName, CreationDate, Description, RoleID]);
+            return await query('UPDATE UserRoles SET RoleName = ?, Description = ? WHERE RoleID = ?', [RoleName, Description, RoleID]);
         } catch (error) {
             throw error;
         }
