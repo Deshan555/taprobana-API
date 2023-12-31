@@ -10,9 +10,20 @@ const EmployeeModel = {
             throw error;
         }
     },
-    addEmployee: async (EmployeeID, EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID) => {
+    // EmployeeID, EmployeeName, EmployeeMobile, EmployeeAddress, EmployeeEmail, EmployeeType, RegistrationDate, FactoryID, hashedPassword
+    addEmployee: async (EmployeeID, EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID, Password) => {
         try {
-            const results = await query('INSERT INTO Employees (EmployeeID, EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID) VALUES (?, ?, ?, ?, ?, ?, ?)', [EmployeeID, EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID]);
+            const results = await query('INSERT INTO Employees (' +
+                'EmployeeID, EmployeeName, JoiningDate, Email, Mobile, RoleID, FactoryID, Password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [EmployeeID, EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID, Password]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
+    getEmployeeByEmail: async (Email) => {
+        try {
+            const results = await query('SELECT * FROM Employees WHERE Email = ?', [Email]);
             return results;
         } catch (error) {
             throw error;
