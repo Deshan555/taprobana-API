@@ -9,6 +9,7 @@ const bcrypt = require('../utils/bcrypt');
 const { generateAccessToken, generateRefreshToken } = require('../security/TokenGen');
 const SignModel = require('../security/SignModel');
 const EmployeeModel = require("../models/Employees");
+const RoleModel = require("../models/Roles");
 
 const AuthControl = {
     authCustomer: async (req, res) => {
@@ -91,6 +92,7 @@ const AuthControl = {
         const {email, password} = req.body;
         try{
             const results = await EmployeeModel.getEmployeeByEmail(email);
+            const empRole = await RoleModel.getRoleByID(results[0].RoleID);
             let passwordFromDataBase = '';
             if(results.length === 0)
                 return errorResponse(res, 'Can Not Find Employee With Given Email Address', 404);
@@ -103,7 +105,7 @@ const AuthControl = {
                     const signData = new SignModel(
                         results[0].Email,
                         results[0].EmployeeID,
-                        results[0].RoleID,
+                        empRole[0].RoleName,
                         new Date(),
                         results[0].EmployeeName
                     );
@@ -137,6 +139,7 @@ const AuthControl = {
                     return errorResponse(res, 'Invalid Refresh Token, Or Refresh Token Has Been Changed By Someone', 403);
                 }
                 const getSignData = await EmployeeModel.getEmployeeByID(userID);
+                const empRole = await RoleModel.getRoleByID(getSignData[0].RoleID);
                 console.log(getSignData);
                 if (getSignData.length === 0) {
                     return errorResponse(res, 'Can Not Find Employee With Given ID', 404);
@@ -144,7 +147,7 @@ const AuthControl = {
                 const signData = new SignModel(
                     getSignData[0].Email,
                     getSignData[0].EmployeeID,
-                    getSignData[0].RoleID,
+                    empRole[0].RoleName,
                     new Date(),
                     getSignData[0].EmployeeName
                 );
