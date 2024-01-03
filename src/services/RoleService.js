@@ -13,14 +13,14 @@ const RoleController = {
         }
     },
     addRole: async (req, res) => {
-        const { RoleName, CreationDate, Description } = req.body;
-
-        if (!RoleName || !CreationDate || !Description) {
-            return errorResponse(res, 'RoleName, CreationDate and Description are required fields', 400);
+        let { roleName, description } = req.body;
+        if (!roleName || !description) {
+            return errorResponse(res, 'RoleName, Description are required fields', 400);
         }
         try {
-            const RoleID = Math.floor(Math.random() * (2 ** 10));
-            const result = await RoleModel.addRole(RoleID, RoleName, CreationDate, Description);
+            const CreationDate = new Date();
+            roleName = 'ROLE.'+roleName.toUpperCase();
+            const result = await RoleModel.addRole(roleName, CreationDate, description);
             successResponse(res, 'Role added successfully', result);
         } catch (error) {
             console.error('Error adding role:', error);
