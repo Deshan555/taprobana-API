@@ -8,6 +8,7 @@ const FertilizerController = require('../services/FertilizerInfoService');
 const EnvironmentalZoneController = require('../services/EnvironmentalZoneService');
 const VehicleController = require('../services/VehicleMappingService');
 const DailyTeaCollectionController = require('../services/DailyTeaCollectionService');
+const RoleController = require('../services/RoleService');
 const FieldInfoController = require('../services/FieldInfoService');
 const RoadRoutingController = require('../services/RoadRoutingService');
 const AuthController = require('../services/AuthService');
@@ -15,15 +16,27 @@ const TokenAuth = require('../security/TokenAuth');
 
 // demo route list
 router.post('/sample', CustomerController.sampleEndPoint);
-//router.post('/refresh', TokenAuth.refreshToken);
+
+// main endpoints for auth-Routes
+router.post('/auth/customer', AuthController.authCustomer);
+router.post('/auth/employee', AuthController.authEmployee);
+router.post('/auth/refreshCustomer', AuthController.newAuthTokenByRefreshTokenCustomer);
+router.post('/auth/refreshEmployee', AuthController.newAuthTokenByRefreshTokenEmployee);
 
 // main endpoints for customer-Routes
-router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
 router.post('/customers/add', CustomerController.addCustomer);
+router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
 router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken, CustomerController.getCustomerByID);
 router.get('/customers/getByEmail/:CustomerEmail', TokenAuth.authenticateToken, CustomerController.getCustomerByEmail);
 router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken,CustomerController.updateCustomer);
 router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken, CustomerController.deleteCustomer);
+
+// main endpoints for roles
+router.get('/roles', RoleController.getAllRoles);
+router.post('/roles/add', RoleController.addRole);
+router.get('/roles/:RoleID', RoleController.getRoleByID);
+router.put('/roles/update/:RoleID', RoleController.updateRole);
+router.delete('/roles/drop/:RoleID', RoleController.deleteRole);
 
 // main endpoints for employee-Routes
 router.get('/employees', EmployeeController.getAllEmployees);
@@ -87,10 +100,5 @@ router.post('/roadRouting/add', RoadRoutingController.addRoadRouting);
 router.get('/roadRouting/:RoadRoutingID', RoadRoutingController.getRoadRoutingByID);
 router.put('/roadRouting/update/:RoadRoutingID', RoadRoutingController.updateRoadRouting);
 router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRoadRouting);
-
-// main endpoints for auth-Routes
-router.post('/auth/customer', AuthController.authCustomer);
-router.post('/auth/employee', AuthController.authEmployee);
-router.post('/auth/refresh', AuthController.newAuthTokenByRefreshTokenCustomer);
 
 module.exports = router;
