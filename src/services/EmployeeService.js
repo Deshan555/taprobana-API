@@ -44,6 +44,17 @@ const EmployeeController = {
             errorResponse(res, 'Error Occurred while adding employee : '+error);
         }
     },
+    getEmployeeByEmail: async (req, res) => {
+        const {EmployeeEmail} = req.params;
+        try {
+            const results = await EmployeeModel.getEmployeeByEmail(EmployeeEmail);
+            if(results.length === 0) return errorResponse(res, 'Employee not found', 404);
+            successResponse(res, 'Employee retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting employee by email:', error);
+            errorResponse(res, 'Error Occurred while fetching employee by email : '+error);
+        }
+    },
     getEmployeeByID: async (req, res) => {
         const {EmployeeID} = req.params;
         try {
