@@ -29,8 +29,10 @@ const jwtModel = {
             throw error;
         }
     },
-    getTokenEmployeeByRefreshToken: async (RefreshToken) => {
+    getTokenEmployeeByRefreshToken: async (RefreshToken, UserID) => {
         try {
+            const results = 'SELECT * FROM JWTTokensEmployee WHERE RefreshToken = '+RefreshToken+' AND UserID = '+UserID+';';
+            console.log(results)
             return await query('SELECT * FROM JWTTokensEmployee WHERE RefreshToken = ? AND UserID = ?', [RefreshToken, UserID]);
         } catch (error) {
             throw error;
