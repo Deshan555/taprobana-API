@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('../utils/bcrypt');
 const { generateAccessToken, generateRefreshToken } = require('../security/TokenGen');
 const SignModel = require('../security/SignModel');
+const EmployeeModel = require("../models/Employees");
 
 const AuthControl = {
     authCustomer: async (req, res) => {
@@ -87,14 +88,78 @@ const AuthControl = {
         }
     },
     authEmployee: async (req, res) => {
-        const {Email, Password} = req.body;
-        try {
-            const results = await authModel.authEmployee(Email, Password);
-            if(results.length === 0) return errorResponse(res, 'Invalid Credentials', 401);
-            successResponse(res, 'Employee authenticated successfully', results)
+        const {email, password} = req.body;
+        try{
+            const results = await EmployeeModel.getEmployeeByEmail(email);
+            let passwordFromDataBase = '';
+            if(results.length === 0)
+                return errorResponse(res, 'Can Not Find Employee With Given Email Address', 404);
+            else
+                passwordFromDataBase = results[0].Password;
+                const passwordMatch = await bcrypt.comparePassword(password, passwordFromDataBase);
+                if(passwordMatch === false)
+                    return errorResponse(res, 'Invalid Credentials, Wrong Password', 401);
+                else{
+                    const signData = new SignModel(
+                        results[0].Email,
+                        results[0].EmployeeID,
+                        results[0].RoleID,
+                        new Date(),
+                        results[0].EmployeeName
+                    );
+                    const deleteToken = await JWTTokenModel.deleteTokenEmployeeByRefreshToken(results[0].EmployeeID);
+                    console.log('Delete Token : '+deleteToken);
+                    const accessToken = await generateAccessToken({ signData });
+                    const refreshToken = await generateRefreshToken({ signData });
+                    const pushTokens = await JWTTokenModel.pushTokenEmployee(accessToken, refreshToken, results[0].EmployeeID);
+                    if(pushTokens.affectedRows === 0) {
+                        return errorResponse(res, 'Error Occurred while generating access token : ' + err);
+                    }else {
+                        successResponse(res, 'Employee authenticated successfully', {accessToken, refreshToken});
+                    }
+                }
         } catch (error) {
             console.error('Error authenticating employee:', error);
             errorResponse(res, 'Error Occurred while authenticating employee : '+error);
+        }
+    },
+    newAuthTokenByRefreshTokenEmployee: async (req, res) => {
+        const { token, userID } = req.body;
+        console.log(userID, token);
+        try {
+            const results = await JWTTokenModel.getTokenEmployeeByRefreshToken(token, userID);
+            console.log(results)
+            if (results.length === 0) {
+                return errorResponse(res, 'Invalid Refresh Token, That Token Not Match With Any Existing Records', 401);
+            }
+            jwt.verify(token, process.env.ACCESS_TOKEN_REFRESH, async (err, user) => {
+                if (err) {
+                    return errorResponse(res, 'Invalid Refresh Token, Or Refresh Token Has Been Changed By Someone', 403);
+                }
+                const getSignData = await EmployeeModel.getEmployeeByID(userID);
+                console.log(getSignData);
+                if (getSignData.length === 0) {
+                    return errorResponse(res, 'Can Not Find Employee With Given ID', 404);
+                }
+                const signData = new SignModel(
+                    getSignData[0].Email,
+                    getSignData[0].EmployeeID,
+                    getSignData[0].RoleID,
+                    new Date(),
+                    getSignData[0].EmployeeName
+                );
+                const deleteToken = await JWTTokenModel.deleteTokenEmployeeByRefreshToken(userID);
+                const accessToken = await generateAccessToken({ signData });
+                const refreshToken = await generateRefreshToken({ signData });
+                const pushTokens = await JWTTokenModel.pushTokenEmployee(accessToken, refreshToken, userID);
+                if (getSignData.length === 0 || pushTokens.affectedRows === 0) {
+                    return errorResponse(res, 'Error Occurred while generating access token');
+                }
+                successResponse(res, 'New Access Token Generated Successfully', { accessToken, refreshToken });
+            });
+        } catch (error) {
+            console.error('Error generating new access token:', error);
+            errorResponse(res, 'Error Occurred while generating new access token: ' + error);
         }
     }
 }
