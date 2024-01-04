@@ -1,5 +1,6 @@
 const EnvironmentalZoneModel = require('../models/EnvironmentalZone');
 const { successResponse, errorResponse } = require('../utils/responseUtils');
+const logger = require('../config/logger');
 
 const EnvironmentalZoneController = {
     getAllEnvironmentalZone: async (req, res) => {
@@ -8,32 +9,37 @@ const EnvironmentalZoneController = {
             if (results.length === 0) return errorResponse(res, 'No environmentalZone found', 404);
             successResponse(res, 'EnvironmentalZone retrieved successfully', results)
         } catch (error) {
-            console.error('Error getting environmentalZone:', error);
+            logger.error('Error getting environmentalZone:', error);
             errorResponse(res, 'Error Occurred while fetching environmentalZone : ' + error);
         }
     },
     addEnvironmentalZone: async (req, res) => {
-        const {EnvironmentalZoneID, EnvironmentalZoneName, EnvironmentalZoneDescription} = req.body;
-
-        if (!EnvironmentalZoneID || !EnvironmentalZoneName || !EnvironmentalZoneDescription) {
-            return errorResponse(res, 'EnvironmentalZoneID, EnvironmentalZoneName and EnvironmentalZoneDescription are required fields', 400);
-        }
-        try {
-            const result = await EnvironmentalZoneModel.addEnvironmentalZone(EnvironmentalZoneID, EnvironmentalZoneName, EnvironmentalZoneDescription);
-            successResponse(res, 'EnvironmentalZone added successfully', result);
+        const {environmentalZoneName, baseLocation} = req.body;
+        const environmentalZoneID = Math.floor(Math.random() * 1000000);
+        if (!environmentalZoneName || !baseLocation) {
+            return errorResponse(res, 'EnvironmentalZoneName, BaseLocation are required fields', 400);
+        } try {
+            const result = await EnvironmentalZoneModel.addEnvironmentalZone(environmentalZoneID, environmentalZoneName, baseLocation);
+            const getEnvZoneByID = await EnvironmentalZoneModel.getEnvironmentalZoneByID(environmentalZoneID);
+            logger.info('EnvironmentalZone added successfully');
+            successResponse(res, 'EnvironmentalZone added successfully', getEnvZoneByID);
         } catch (error) {
-            console.error('Error adding environmentalZone:', error);
+            logger.error('Error adding environmentalZone:', error);
             errorResponse(res, 'Error Occurred while adding environmentalZone : ' + error);
         }
     },
     updateEnvironmentalZone: async (req, res) => {
-        const {EnvironmentalZoneID} = req.params;
-        const {EnvironmentalZoneName, EnvironmentalZoneDescription} = req.body;
+        const {environmentalZoneID} = req.params;
+        const {environmentalZoneName, baseLocation} = req.body;
         try {
-            const result = await EnvironmentalZoneModel.updateEnvironmentalZone(EnvironmentalZoneID, EnvironmentalZoneName, EnvironmentalZoneDescription);
-            successResponse(res, 'EnvironmentalZone updated successfully', result);
+            const getEnvZoneByID = await EnvironmentalZoneModel.getEnvironmentalZoneByID(environmentalZoneID);
+            if (getEnvZoneByID.length === 0) return errorResponse(res, 'EnvironmentalZone not found', 404);
+            const result = await EnvironmentalZoneModel.updateEnvironmentalZone(environmentalZoneID, environmentalZoneName, baseLocation);
+            const getEnvByID = await EnvironmentalZoneModel.getEnvironmentalZoneByID(environmentalZoneID);
+            logger.info('EnvironmentalZone updated successfully : ', getEnvByID);
+            successResponse(res, 'EnvironmentalZone updated successfully', getEnvByID);
         } catch (error) {
-            console.error('Error updating environmentalZone:', error);
+            logger.error('Error updating environmentalZone:', error);
             errorResponse(res, 'Error Occurred while updating environmentalZone : ' + error);
         }
     },
@@ -43,7 +49,7 @@ const EnvironmentalZoneController = {
             await EnvironmentalZoneModel.deleteEnvironmentalZone(EnvironmentalZoneID);
             successResponse(res, 'EnvironmentalZone deleted successfully', null);
         } catch (error) {
-            console.error('Error deleting environmentalZone:', error);
+            logger.error('Error deleting environmentalZone:', error)
             errorResponse(res, 'Error Occurred while deleting environmentalZone : ' + error);
         }
     },
@@ -54,7 +60,7 @@ const EnvironmentalZoneController = {
             if (results.length === 0) return errorResponse(res, 'EnvironmentalZone not found', 404);
             successResponse(res, 'EnvironmentalZone retrieved successfully', results);
         } catch (error) {
-            console.error('Error getting environmentalZone by ID:', error);
+            logger.error('Error getting environmentalZone by ID:', error);
             errorResponse(res, 'Error Occurred while fetching environmentalZone by ID : ' + error);
         }
     }

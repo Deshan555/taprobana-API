@@ -1,45 +1,40 @@
 const { query } = require('../config/database');
+const logger = require("../config/logger");
 
-// EnvironmentalZoneModel is an object that contains functions
 const EnvironmentalZoneModel = {
     getAllEnvironmentalZone: async () => {
         try {
-            const results = await query('SELECT * FROM EnvironmentalZone');
-            return results;
+            return await query('SELECT * FROM EnvironmentalZone');
         } catch (error) {
-            throw error;
+            logger.error('Error getting EnvironmentalZone:', error);
         }
     },
-    addEnvironmentalZone: async (ZoneID, ZoneName, Temperature, Humidity, Rainfall, WindSpeed, FieldID) => {
+    addEnvironmentalZone: async (EnvironmentalZoneID, EnvironmentalZoneName, BaseLocation) => {
         try {
-            const results = await query('INSERT INTO EnvironmentalZone (ZoneID, ZoneName, Temperature, Humidity, Rainfall, WindSpeed, FieldID) VALUES (?, ?, ?, ?, ?, ?, ?)', [ZoneID, ZoneName, Temperature, Humidity, Rainfall, WindSpeed, FieldID]);
-            return results;
+            return await query('INSERT INTO EnvironmentalZone (EnvironmentalZoneID, EnvironmentalZoneName, BaseLocation) VALUES (?, ?, ?)', [EnvironmentalZoneID, EnvironmentalZoneName, BaseLocation]);
         } catch (error) {
-            throw error;
+            logger.error('Error adding EnvironmentalZone:', error);
         }
     },
-    getEnvironmentalZoneByID: async (ZoneID) => {
+    getEnvironmentalZoneByID: async (EnvironmentalZoneID) => {
         try {
-            const results = await query('SELECT * FROM EnvironmentalZone WHERE ZoneID = ?', [ZoneID]);
-            return results;
+            return await query('SELECT * FROM EnvironmentalZone WHERE EnvironmentalZoneID = ?', [EnvironmentalZoneID]);
         } catch (error) {
-            throw error;
+            logger.error('Error getting EnvironmentalZone by ID:', error);
         }
     },
-    updateEnvironmentalZone: async (ZoneID, ZoneName, Temperature, Humidity, Rainfall, WindSpeed, FieldID) => {
+    updateEnvironmentalZone: async (EnvironmentalZoneID, EnvironmentalZoneName, BaseLocation) => {
         try {
-            const results = await query('UPDATE EnvironmentalZone SET ZoneName = ?, Temperature = ?, Humidity = ?, Rainfall = ?, WindSpeed = ?, FieldID = ? WHERE ZoneID = ?', [ZoneName, Temperature, Humidity, Rainfall, WindSpeed, FieldID, ZoneID]);
-            return results;
+            return await query('UPDATE EnvironmentalZone SET EnvironmentalZoneName = ? , BaseLocation = ? WHERE EnvironmentalZoneID = ?', [EnvironmentalZoneName, BaseLocation, EnvironmentalZoneID]);
         } catch (error) {
-            throw error;
+            logger.error('Error updating EnvironmentalZone:', error);
         }
     },
-    deleteEnvironmentalZone: async (ZoneID) => {
+    deleteEnvironmentalZone: async (EnvironmentalZoneID) => {
         try {
-            const results = await query('DELETE FROM EnvironmentalZone WHERE ZoneID = ?', [ZoneID]);
-            return results;
+            return await query('DELETE FROM EnvironmentalZone WHERE EnvironmentalZoneID = ?', [EnvironmentalZoneID]);
         } catch (error) {
-            throw error;
+            logger.error('Error deleting EnvironmentalZone:', error);
         }
     }
 };
