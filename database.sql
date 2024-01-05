@@ -86,11 +86,13 @@ CREATE TABLE VehicleMappings
     VehicleType    ENUM('TRUCK', 'LORRY', 'MINI_LORRY' ) NOT NULL,
     VolumeCapacity DECIMAL(10, 2) NOT NULL,
     WeightCapacity DECIMAL(10, 2) NOT NULL,
+    NumberPlateID    VARCHAR(255)   NOT NULL,
     FactoryID      INT,
     DriverID       INT,
     RouteID        INT,
     FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID),
-    FOREIGN KEY (DriverID) REFERENCES Employees (EmployeeID)
+    FOREIGN KEY (DriverID) REFERENCES Employees (EmployeeID),
+    FOREIGN KEY (RouteID) REFERENCES RoadRouting (RoutingID)
 );
 
 -- Table for Environmental Zones
@@ -98,12 +100,20 @@ CREATE TABLE EnvironmentalZone
 (
     ZoneID      INT PRIMARY KEY,
     ZoneName    VARCHAR(255)   NOT NULL,
-    Temperature DECIMAL(10, 2) NOT NULL,
-    Humidity    DECIMAL(10, 2) NOT NULL,
-    Rainfall    DECIMAL(10, 2) NOT NULL,
-    WindSpeed   DECIMAL(10, 2) NOT NULL,
-    FieldID     INT,
-    FOREIGN KEY (FieldID) REFERENCES FieldInfo (FieldID)
+    CreationDate DATE NOT NULL,
+);
+
+-- Table for Weather Information
+CREATE TABLE WeatherInfo
+(
+    WeatherConID       INT PRIMARY KEY,
+    WeatherDate     DATE           NOT NULL,
+    Temperature     DECIMAL(10, 2) NOT NULL,
+    Humidity        DECIMAL(10, 2) NOT NULL,
+    WindSpeed       DECIMAL(10, 2) NOT NULL,
+    Rainfall        DECIMAL(10, 2) NOT NULL,
+    ZoneID          INT,
+    FOREIGN KEY (ZoneID) REFERENCES EnvironmentalZone (ZoneID)
 );
 
 -- Table For Field Information Collection
