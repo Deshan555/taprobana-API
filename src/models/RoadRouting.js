@@ -1,45 +1,56 @@
 const { query } = require('../config/database');
+const Logger = require('../config/logger');
+const logger = require("../config/logger");
 
 // RoadRoutingModel is an object that contains functions
 const RoadRoutingModel = {
     getAllRoadRouting: async () => {
         try {
-            const results = await query('SELECT * FROM RoadRouting');
-            return results;
+            return await query('SELECT * FROM RoadRouting');
         } catch (error) {
-            throw error;
+            logger.error('Error getting roadRouting:', error);
         }
     },
     addRoadRouting: async (RoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration) => {
         try {
-            const results = await query('INSERT INTO RoadRouting (RoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [RoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration]);
-            return results;
+            return await query('INSERT INTO RoadRouting (RoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [RoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration]);
         } catch (error) {
-            throw error;
+            logger.error('Error adding roadRouting:', error);
+        }
+    },
+    updateStopCount: async (RoutingID, TotalStops) => {
+        try {
+            return await query('UPDATE RoadRouting SET TotalStops = ? WHERE RoutingID = ?', [TotalStops, RoutingID]);
+        } catch (error) {
+            logger.error('Error updating roadRouting:', error);
+        }
+    },
+    getTotalStopCountByRoutingID: async (RoutingID) => {
+        try {
+            return await query('SELECT TotalStops FROM RoadRouting WHERE RoutingID = ?', [RoutingID]);
+        } catch (error) {
+            logger.error('Error getting roadRouting by ID:', error);
         }
     },
     getRoadRoutingByID: async (RoutingID) => {
         try {
-            const results = await query('SELECT * FROM RoadRouting WHERE RoutingID = ?', [RoutingID]);
-            return results;
+            return await query('SELECT * FROM RoadRouting WHERE RoutingID = ?', [RoutingID]);
         } catch (error) {
-            throw error;
+            logger.error('Error getting roadRouting by ID:', error);
         }
     },
     updateRoadRouting: async (RoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration) => {
         try {
-            const results = await query('UPDATE RoadRouting SET SourceFactoryID = ?, Destination = ?, RoundTrip = ?, StartLongitude = ?, StartLatitude = ?, EndLongitude = ?, EndLatitude = ?, TotalStops = ?, Duration = ? WHERE RoutingID = ?', [SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration, RoutingID]);
-            return results;
+            return await query('UPDATE RoadRouting SET SourceFactoryID = ?, Destination = ?, RoundTrip = ?, StartLongitude = ?, StartLatitude = ?, EndLongitude = ?, EndLatitude = ?, TotalStops = ?, Duration = ? WHERE RoutingID = ?', [SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration, RoutingID]);
         } catch (error) {
-            throw error;
+            logger.error('Error updating roadRouting:', error);
         }
     },
     deleteRoadRouting: async (RoutingID) => {
         try {
-            const results = await query('DELETE FROM RoadRouting WHERE RoutingID = ?', [RoutingID]);
-            return results;
+            return await query('DELETE FROM RoadRouting WHERE RoutingID = ?', [RoutingID]);
         } catch (error) {
-            throw error;
+            logger.error('Error deleting roadRouting:', error);
         }
     }
 };

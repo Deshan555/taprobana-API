@@ -1,5 +1,7 @@
 const RoadRoutingModel = require('../models/RoadRouting');
 const { successResponse, errorResponse } = require('../utils/responseUtils');
+const logger = require('../config/logger');
+const FactoryModel = require('../models/Factory');
 
 const RoadRoutingController = {
     gatAllRoadRouting: async (req, res) => {
@@ -8,21 +10,31 @@ const RoadRoutingController = {
             if(results.length === 0) return errorResponse(res, 'No roadRouting found', 404);
             successResponse(res, 'RoadRouting retrieved successfully', results)
         } catch (error) {
-            console.error('Error Getting RoadRouting:', error);
+            logger.error('Error getting roadRouting:', error);
             errorResponse(res, 'Error Occurred while fetching roadRouting : '+error);
         }
     },
     addRoadRouting: async (req, res) => {
-        const { RoadRoutingID, RoadRoutingName, RoadRoutingType, RoadRoutingPrice, RoadRoutingDescription } = req.body;
+        const { SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude } = req.body;
+        let Duration = 0;
+        let TotalStops = 0;
+        const randomRoutingID = Math.floor(Math.random() * 1000000000);
+        const getFactory = await FactoryModel.getFactoryByID(SourceFactoryID);
+        if (getFactory.length === 0) return errorResponse(res, 'Factory not found', 404);
 
-        if (!RoadRoutingID || !RoadRoutingName || !RoadRoutingType || !RoadRoutingPrice || !RoadRoutingDescription) {
-            return errorResponse(res, 'RoadRoutingID, RoadRoutingName, RoadRoutingType, RoadRoutingPrice and RoadRoutingDescription are required fields', 400);
+        if (!SourceFactoryID || !Destination || !RoundTrip || !StartLongitude || !StartLatitude || !EndLongitude || !EndLatitude) {
+            return errorResponse(res, 'SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude are required fields', 400);
         }
         try {
-            const result = await RoadRoutingModel.addRoadRouting(RoadRoutingID, RoadRoutingName, RoadRoutingType, RoadRoutingPrice, RoadRoutingDescription);
-            successResponse(res, 'RoadRouting added successfully', result);
+            const result = await RoadRoutingModel.addRoadRouting(randomRoutingID, SourceFactoryID, Destination, RoundTrip, StartLongitude, StartLatitude, EndLongitude, EndLatitude, TotalStops, Duration);
+            const response = {
+                roadRouting: await RoadRoutingModel.getRoadRoutingByID(randomRoutingID),
+                factory: getFactory
+            }
+            logger.info('RoadRouting added successfully : ', response);
+            successResponse(res, 'RoadRouting added successfully', response);
         } catch (error) {
-            console.error('Error adding roadRouting:', error);
+            logger.error('Error adding roadRouting:', error);
             errorResponse(res, 'Error Occurred while adding roadRouting : '+error);
         }
     },
@@ -31,6 +43,7 @@ const RoadRoutingController = {
         try {
             const results = await RoadRoutingModel.getRoadRoutingByID(RoadRoutingID);
             if (results.length === 0) return errorResponse(res, 'RoadRouting not found', 404);
+            logger.info('RoadRouting retrieved successfully : ', results);
             successResponse(res, 'RoadRouting retrieved successfully', results);
         } catch (error) {
             console.error('Error getting roadRouting by ID:', error);
