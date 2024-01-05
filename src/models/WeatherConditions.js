@@ -23,18 +23,27 @@ const WeatherZoneModel = {
             logger.error('Error getting WeatherInfo by ID:', error);
         }
     },
-    updateWeatherZone: async (WeatherConID, WeatherDate, Temperature, Humidity, WindSpeed, Rainfall, ZoneID) => {
+    getWeatherZoneDataByDate: async (WeatherDate) => {
         try {
-            return await query('UPDATE WeatherInfo SET WeatherDate = ?, Temperature = ?, Humidity = ?, WindSpeed = ?, Rainfall = ?, ZoneID = ? WHERE WeatherConID = ?', [WeatherDate, Temperature, Humidity, WindSpeed, Rainfall, ZoneID, WeatherConID]);
+            return await query('SELECT * FROM WeatherInfo WHERE WeatherDate = ?', [WeatherDate]);
         } catch (error) {
-            logger.error('Error updating WeatherInfo:', error);
+            logger.error('Error getting WeatherInfo by Date:', error);
         }
     },
-    deleteWeatherZone: async (WeatherConID) => {
+    getDataByZoneID: async (ZoneID) => {
         try {
-            return await query('DELETE FROM WeatherInfo WHERE WeatherConID = ?', [WeatherConID]);
+            return await query('SELECT * FROM WeatherInfo WHERE ZoneID = ?', [ZoneID]);
         } catch (error) {
-            logger.error('Error deleting WeatherInfo:', error);
+            logger.error('Error getting WeatherInfo by ZoneID:', error);
+        }
+    },
+    getDataByTimeGivenPeriod: async (StartDate, EndDate, ZoneID) => {
+        try {
+            return await query('SELECT * FROM WeatherInfo WHERE WeatherDate BETWEEN ? AND ? AND ZoneID = ?', [StartDate, EndDate, ZoneID]);
+        } catch (error) {
+            logger.error('Error getting WeatherInfo by ZoneID:', error);
         }
     }
 };
+
+module.exports = WeatherZoneModel;
