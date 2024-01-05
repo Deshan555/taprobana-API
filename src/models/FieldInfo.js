@@ -11,6 +11,7 @@ const FieldInfoModel = {
         }
     },
     addFieldInfo: async (FieldID, FieldName, FieldSize, FieldType, FieldAddress, TeaType, BaseLocation, BaseElevation, SoilType, Attitude, Longitude, FieldRegistrationDate, RouteID, OwnerID, ZoneID, FactoryID) => {
+        console.log('FiledID', FieldID, 'FieldName', FieldName, 'FieldSize', FieldSize, 'FieldType', FieldType, 'FieldAddress', FieldAddress, 'TeaType', TeaType, 'BaseLocation', BaseLocation, 'BaseElevation', BaseElevation, 'SoilType', SoilType, 'Attitude', Attitude, 'Longitude', Longitude, 'FieldRegistrationDate', FieldRegistrationDate, 'RouteID', RouteID, 'OwnerID', OwnerID, 'ZoneID', ZoneID, 'FactoryID', FactoryID);
         try {
            return await query('INSERT INTO FieldInfo (FieldID, FieldName, FieldSize, FieldType, FieldAddress, TeaType, BaseLocation, BaseElevation, SoilType, Attitude, Longitude, FieldRegistrationDate, RouteID, OwnerID, ZoneID, FactoryID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                [FieldID, FieldName, FieldSize, FieldType, FieldAddress, TeaType, BaseLocation, BaseElevation, SoilType, Attitude, Longitude, FieldRegistrationDate, RouteID, OwnerID, ZoneID, FactoryID]);
@@ -20,6 +21,7 @@ const FieldInfoModel = {
     },
     getFieldInfoByID: async (FieldID) => {
         try {
+            console.log('FieldID', FieldID)
             return await query('SELECT * FROM FieldInfo WHERE FieldID = ?', [FieldID]);
         } catch (error) {
             logger.error('Error getting fieldInfo by ID:', error);

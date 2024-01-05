@@ -33,14 +33,12 @@ const FieldInfoController = {
             zoneID,
             factoryID,
         } = req.body;
-        // Random Field Name Generator
         const FieldID = Math.floor(Math.random() * 1000000000);
         const FieldName = 'Field_'+FieldID;
+        const FieldRegistrationDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
         if (!fieldSize || !fieldType || !fieldAddress || !teaType || !baseLocation || !baseElevation || !soilType || !latitude || !longitude || !ownerID || !zoneID || !factoryID) {
             return errorResponse(res, 'FieldSize, FieldType, FieldAddress, TeaType, BaseLocation, BaseElevation, SoilType, Attitude, Longitude, OwnerID, ZoneID and FactoryID are required fields', 400);
-        }
-        try {
-            // cross validation foreign keys
+        } try {
             const roadRouting = await RouteModel.getRoadRoutingByID(routeID);
             if(roadRouting.length === 0) return errorResponse(res, 'RoadRouting not found', 404);
             const customer = await CustomerModel.getCustomerByID(ownerID);
@@ -49,9 +47,9 @@ const FieldInfoController = {
             if(environmentalZone.length === 0) return errorResponse(res, 'EnvironmentalZone not found', 404);
             const factory = await FactoryModel.getFactoryByID(factoryID);
             if(factory.length === 0) return errorResponse(res, 'Factory not found', 404);
-
-            const result = await FieldInfoModel.addFieldInfo(FieldID, FieldName, fieldSize, fieldType, fieldAddress, teaType, baseLocation, baseElevation, soilType, latitude, longitude, routeID, ownerID, zoneID, factoryID);
+            const result = await FieldInfoModel.addFieldInfo(FieldID, FieldName, fieldSize, fieldType, fieldAddress, teaType, baseLocation, baseElevation, soilType, latitude, longitude, FieldRegistrationDate, routeID, ownerID, zoneID, factoryID);
             const fieldInfo = await FieldInfoModel.getFieldInfoByID(FieldID);
+            if (result.affectedRows === 0) return errorResponse(res, 'Error adding fieldInfo', 500);
             const response = {
                 fieldInfo: fieldInfo,
                 roadRouting: roadRouting,
@@ -78,7 +76,9 @@ const FieldInfoController = {
         }
     },
     updateFieldInfo: async (req, res) => {
-        const {fieldID} = req.params;
+        const {FieldID} = req.params;
+        const fieldID = FieldID;
+        console.log('fieldID', fieldID)
         const {
             fieldSize,
             fieldType,
