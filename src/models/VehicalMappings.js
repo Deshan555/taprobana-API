@@ -1,45 +1,40 @@
 const { query } = require('../config/database');
+const logger = require("../config/logger");
 
-// VehicleMappingsModel is an object that contains functions
 const VehicleMappingsModel = {
     getAllVehicleMappings: async () => {
         try {
-            const results = await query('SELECT * FROM VehicleMappings');
-            return results;
+            return await query('SELECT * FROM VehicleMappings');
         } catch (error) {
-            throw error;
+            logger.error('Error getting VehicleMappings:', error);
         }
     },
-    addVehicleMappings: async (VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, FactoryID, DriverID, RouteID) => {
+    addVehicleMappings: async (VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, NumberPlateID, FactoryID, DriverID, RouteID) => {
         try {
-            const results = await query('INSERT INTO VehicleMappings (VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, FactoryID, DriverID, RouteID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, FactoryID, DriverID, RouteID]);
-            return results;
+            return await query('INSERT INTO VehicleMappings (VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, NumberPlateID, FactoryID, DriverID, RouteID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, NumberPlateID, FactoryID, DriverID, RouteID]);
         } catch (error) {
-            throw error;
+            logger.error('Error adding VehicleMappings:', error);
         }
     },
     getVehicleMappingsByID: async (VehicleID) => {
         try {
-            const results = await query('SELECT * FROM VehicleMappings WHERE VehicleID = ?', [VehicleID]);
-            return results;
+            return await query('SELECT * FROM VehicleMappings WHERE VehicleID = ?', [VehicleID]);
         } catch (error) {
-            throw error;
+            logger.error('Error getting VehicleMappings by ID:', error);
         }
     },
-    updateVehicleMappings: async (VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, FactoryID, DriverID, RouteID) => {
+    updateVehicleMappings: async (VehicleID, VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, NumberPlateID, FactoryID, DriverID, RouteID) => {
         try {
-            const results = await query('UPDATE VehicleMappings SET VehicleNumber = ?, VehicleType = ?, VolumeCapacity = ?, WeightCapacity = ?, FactoryID = ?, DriverID = ?, RouteID = ? WHERE VehicleID = ?', [VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, FactoryID, DriverID, RouteID, VehicleID]);
-            return results;
+            return await query('UPDATE VehicleMappings SET VehicleNumber = ? , VehicleType = ?, VolumeCapacity = ?, WeightCapacity = ?, NumberPlateID = ?, FactoryID = ?, DriverID = ?, RouteID = ? WHERE VehicleID = ?', [VehicleNumber, VehicleType, VolumeCapacity, WeightCapacity, NumberPlateID, FactoryID, DriverID, RouteID, VehicleID]);
         } catch (error) {
-            throw error;
+            logger.error('Error updating VehicleMappings:', error);
         }
     },
     deleteVehicleMappings: async (VehicleID) => {
         try {
-            const results = await query('DELETE FROM VehicleMappings WHERE VehicleID = ?', [VehicleID]);
-            return results;
+            return await query('DELETE FROM VehicleMappings WHERE VehicleID = ?', [VehicleID]);
         } catch (error) {
-            throw error;
+            logger.error('Error deleting VehicleMappings:', error);
         }
     }
 };
