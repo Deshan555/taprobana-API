@@ -64,6 +64,17 @@ const EnvironmentalZoneController = {
             logger.error('Error getting environmentalZone by ID:', error);
             errorResponse(res, 'Error Occurred while fetching environmentalZone by ID : ' + error);
         }
+    },
+    getBaseLocationsList: async (req, res) => {
+        const {EnvironmentalZoneID} = req.params;
+        try {
+            const results = await EnvironmentalZoneModel.getBaseLocationsList(EnvironmentalZoneID);
+            if (results.length === 0) return errorResponse(res, 'EnvironmentalZone not found', 404);
+            successResponse(res, 'EnvironmentalZone retrieved successfully', results);
+        } catch (error) {
+            logger.error('Error getting environmentalZone by ID:', error);
+            errorResponse(res, 'Error Occurred while fetching environmentalZone by ID : ' + error);
+        }
     }
 };
 
