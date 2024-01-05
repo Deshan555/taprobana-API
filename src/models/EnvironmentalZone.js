@@ -18,8 +18,14 @@ const EnvironmentalZoneModel = {
     },
     getEnvironmentalZoneByID: async (EnvironmentalZoneID) => {
         try {
-            logger.info("SELECT * FROM EnvironmentalZone WHERE ZoneID = ?", [EnvironmentalZoneID]);
             return await query('SELECT * FROM EnvironmentalZone WHERE ZoneID = ?', [EnvironmentalZoneID]);
+        } catch (error) {
+            logger.error('Error getting EnvironmentalZone by ID:', error);
+        }
+    },
+    getBaseLocationsList: async (EnvironmentalZoneID) => {
+        try {
+            return await query('SELECT BaseLocation FROM EnvironmentalZone WHERE ZoneID = ?', [EnvironmentalZoneID]);
         } catch (error) {
             logger.error('Error getting EnvironmentalZone by ID:', error);
         }
