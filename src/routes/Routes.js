@@ -70,7 +70,7 @@ router.delete('/environmentalists/drop/:EnvironmentalZoneID', EnvironmentalZoneC
 // main endpoints for vehicle-Routes
 router.get('/vehicles', VehicleController.getAllVehicleMappings);
 router.post('/vehicles/add', VehicleController.addVehicleMappings);
-router.get('/vehicles/:VehicleID', VehicleController.getVehicleMappingsByID);
+router.get('/vehicles/:VehicleID', VehicleController.getAllVehicleMappingsByID);
 router.put('/vehicles/update/:VehicleID', VehicleController.updateVehicleMappings);
 router.delete('/vehicles/drop/:VehicleID', VehicleController.deleteVehicleMappings);
 
