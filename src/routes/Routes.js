@@ -13,9 +13,10 @@ const FieldInfoController = require('../services/FieldInfoService');
 const RoadRoutingController = require('../services/RoadRoutingService');
 const AuthController = require('../services/AuthService');
 const TokenAuth = require('../security/TokenAuth');
-
+const WeatherController = require('../services/WeatherService');
 // demo route list
 router.post('/sample', CustomerController.sampleEndPoint);
+router.get('/weather/:city', WeatherController.getWeatherData);
 
 // main endpoints for auth-Routes
 router.post('/auth/customer', AuthController.authCustomer);
@@ -93,6 +94,9 @@ router.post('/fieldInfo/add', FieldInfoController.addFieldInfo);
 router.get('/fieldInfo/:FieldID', FieldInfoController.getFieldInfoByID);
 router.put('/fieldInfo/update/:FieldID', FieldInfoController.updateFieldInfo);
 router.delete('/fieldInfo/drop/:FieldID', FieldInfoController.deleteFieldInfo);
+router.get('/fieldInfo/getByZoneID/:zoneID', FieldInfoController.getFieldsByZoneID);
+router.get('/fieldInfo/getByFactoryID/:factoryID', FieldInfoController.getFieldsByFactoryID);
+router.get('/fieldInfo/getByRouteID/:routeID', FieldInfoController.getFieldsByRouteID);
 
 // main endpoints for roadRouting-Routes
 router.get('/roadRouting', RoadRoutingController.gatAllRoadRouting);
