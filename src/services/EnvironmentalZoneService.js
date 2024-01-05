@@ -29,8 +29,9 @@ const EnvironmentalZoneController = {
         }
     },
     updateEnvironmentalZone: async (req, res) => {
-        const {environmentalZoneID} = req.params;
+        const {EnvironmentalZoneID} = req.params;
         const {environmentalZoneName, baseLocation} = req.body;
+        const environmentalZoneID = EnvironmentalZoneID;
         try {
             const getEnvZoneByID = await EnvironmentalZoneModel.getEnvironmentalZoneByID(environmentalZoneID);
             if (getEnvZoneByID.length === 0) return errorResponse(res, 'EnvironmentalZone not found', 404);
