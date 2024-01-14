@@ -88,6 +88,9 @@ CREATE TABLE VehicleMappings
     WeightCapacity DECIMAL(10, 2) NOT NULL,
     NumberPlateID    VARCHAR(255)   NOT NULL,
     FactoryID      INT,
+    vehicleFrontImage VARCHAR(255) NOT NULL,
+    vehicleBackImage VARCHAR(255) NOT NULL,
+    vehicleNumberPlateImage VARCHAR(255) NOT NULL,
     FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID)
 );
 
