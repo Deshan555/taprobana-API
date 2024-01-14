@@ -88,11 +88,21 @@ CREATE TABLE VehicleMappings
     WeightCapacity DECIMAL(10, 2) NOT NULL,
     NumberPlateID    VARCHAR(255)   NOT NULL,
     FactoryID      INT,
-    DriverID       INT,
-    RouteID        INT,
-    FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID),
-    FOREIGN KEY (DriverID) REFERENCES Employees (EmployeeID),
-    FOREIGN KEY (RouteID) REFERENCES RoadRouting (RoutingID)
+    FOREIGN KEY (FactoryID) REFERENCES Factories (FactoryID)
+);
+
+CREATE TABLE RouteInformation
+(
+    RouteInfoID INT PRIMARY KEY AUTO_INCREMENT,
+    PolicyCreationDate DATE NOT NULL,
+    TeaCollectorID INT,
+    RouteID INT,
+    VehicleID INT,
+    DriverID INT,
+    FOREIGN KEY (TeaCollectorID) REFERENCES Employees (EmployeeID),
+    FOREIGN KEY (RouteID) REFERENCES RoadRouting (RoutingID),
+    FOREIGN KEY (VehicleID) REFERENCES VehicleMappings (VehicleID),
+    FOREIGN KEY (DriverID) REFERENCES Employees (EmployeeID)
 );
 
 -- Table for Environmental Zones
