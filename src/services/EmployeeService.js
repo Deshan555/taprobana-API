@@ -3,6 +3,9 @@ const FactoryModel = require('../models/Factory');
 const RoleModel = require('../models/Roles');
 const { successResponse, errorResponse } = require('../utils/responseUtils');
 const {hashPassword} = require("../utils/bcrypt");
+const logger = require('../config/logger');
+const EmailService = require('../services/MailService');
+const TemplateProvider = require('../services/TemplateProvider');
 
 const EmployeeController = {
     getAllEmployees: async (req, res) => {
@@ -19,7 +22,7 @@ const EmployeeController = {
         const { EmployeeName, EmployeeMobile, EmployeeEmail, EmployeeType, FactoryID, Password } = req.body;
 
         if (!EmployeeName || !EmployeeMobile || !EmployeeEmail || !EmployeeType || !FactoryID || !Password) {
-            return errorResponse(res, 'EmployeeID, EmployeeName, EmployeeMobile, EmployeeAddress, EmployeeEmail, EmployeeType, RegistrationDate and FactoryID are required fields', 400);
+            return errorResponse(res, 'EmployeeName, EmployeeMobile, EmployeeAddress, EmployeeEmail, EmployeeType, RegistrationDate and FactoryID are required fields', 400);
         }
         try {
             const RegistrationDate = new Date();
@@ -38,6 +41,15 @@ const EmployeeController = {
                 role : checkByRoleID,
                 factory : checkByFactoryID
             }
+            const emailTemplate = TemplateProvider.generateRegistrationEmail(EmployeeName, EmployeeEmail, Password);
+                   
+            EmailService.sendSingleEmail({
+                to: EmployeeEmail,
+                subject: 'Employee Registration',
+                text: '',
+                html: emailTemplate
+            });
+            logger.info('Employee added successfully');
             successResponse(res, 'Employee added successfully', response);
         } catch (error) {
             console.error('Error adding employee:', error);
@@ -80,6 +92,14 @@ const EmployeeController = {
                 role : await RoleModel.getRoleByID(EmployeeType),
                 factory : await FactoryModel.getFactoryByID(FactoryID)
             }
+            const emailTemplate = TemplateProvider.generateUpdateEmail(EmployeeName, EmployeeEmail);
+            EmailService.sendSingleEmail({
+                to: EmployeeEmail,
+                subject: 'Employee Details Update',
+                text: '',
+                html: emailTemplate
+            });
+            logger.info('Employee updated successfully');
             successResponse(res, 'Employee updated successfully', response);
         } catch (error) {
             console.error('Error updating employee:', error);
