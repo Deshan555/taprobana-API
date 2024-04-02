@@ -14,9 +14,16 @@ const RoadRoutingController = require('../services/RoadRoutingService');
 const AuthController = require('../services/AuthService');
 const TokenAuth = require('../security/TokenAuth');
 const WeatherController = require('../services/WeatherService');
+const LocationService = require('../services/LocationService');
+const EmailService = require('../services/MailService');
+
+
 // demo route list
 router.post('/sample', CustomerController.sampleEndPoint);
 router.get('/weather/:city', WeatherController.getWeatherData);
+
+// main endpoints for email-Routes
+router.post('/email/send', EmailService.sendSingleEmail);
 
 // main endpoints for auth-Routes
 router.post('/auth/customer', AuthController.authCustomer);
@@ -26,11 +33,15 @@ router.post('/auth/refreshEmployee', AuthController.newAuthTokenByRefreshTokenEm
 
 // main endpoints for customer-Routes
 router.post('/customers/add', CustomerController.addCustomer);
-router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
-router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken, CustomerController.getCustomerByID);
+// router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
+router.get('/customers', CustomerController.getAllCustomers);
+// router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken, CustomerController.getCustomerByID);
+router.get('/customers/getById/:CustomerID', CustomerController.getCustomerByID);
 router.get('/customers/getByEmail/:CustomerEmail', TokenAuth.authenticateToken, CustomerController.getCustomerByEmail);
-router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken,CustomerController.updateCustomer);
-router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken, CustomerController.deleteCustomer);
+// router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken,CustomerController.updateCustomer);
+router.put('/customers/update/:CustomerID', CustomerController.updateCustomer);
+// router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken, CustomerController.deleteCustomer);
+router.delete('/customers/drop/:CustomerID', CustomerController.deleteCustomer);
 
 // main endpoints for roles
 router.get('/roles', RoleController.getAllRoles);
@@ -41,6 +52,7 @@ router.delete('/roles/drop/:RoleID', RoleController.deleteRole);
 
 // main endpoints for employee-Routes
 router.get('/employees', EmployeeController.getAllEmployees);
+router.get('/employees/drivers', EmployeeController.driversWithNoVehicleMappings);
 router.post('/employees/add', EmployeeController.addEmployee);
 router.get('/employees/:EmployeeID', EmployeeController.getEmployeeByID);
 router.put('/employees/update/:EmployeeID', EmployeeController.updateEmployee);
@@ -104,5 +116,8 @@ router.post('/roadRouting/add', RoadRoutingController.addRoadRouting);
 router.get('/roadRouting/:RoadRoutingID', RoadRoutingController.getRoadRoutingByID);
 router.put('/roadRouting/update/:RoadRoutingID', RoadRoutingController.updateRoadRouting);
 router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRoadRouting);
+
+// Location Service Main Endpoints
+router.get('/location', LocationService.fetchAllLocationDetails);
 
 module.exports = router;
