@@ -70,6 +70,16 @@ const RoadRoutingController = {
             console.error('Error deleting roadRouting:', error);
             errorResponse(res, 'Error Occurred while deleting roadRouting : ' + error);
         }
+    },
+    getRoutingWithOutMappings: async (req, res) => {
+        try {
+            const results = await RoadRoutingModel.routingWithOutMappings();
+            if(results.length === 0) return errorResponse(res, 'No routes found without vehicle mappings', 404);
+            successResponse(res, 'Routes retrieved successfully', results)
+        } catch (error) {
+            logger.error('Error getting Routes with no vehicle mappings:', error);
+            errorResponse(res, 'Error Occurred while fetching Routes with no vehicle mappings : '+error);
+        }
     }
 };
 
