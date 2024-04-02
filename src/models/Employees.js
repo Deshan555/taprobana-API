@@ -33,9 +33,10 @@ const EmployeeModel = {
             logger.error('Error getting Employee by ID:', error);
         }
     },
-    updateEmployee: async (EmployeeID, EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID) => {
+    updateEmployee: async (EmployeeID, EmployeeName, Email, Mobile, Role, FactoryID) => {
+        console.log(FactoryID);
         try {
-            return await query('UPDATE employees SET EmployeeName = ?, JoiningDate = ?, Email = ?, Mobile = ?, Role = ?, FactoryID = ? WHERE EmployeeID = ?', [EmployeeName, JoiningDate, Email, Mobile, Role, FactoryID, EmployeeID]);
+            return await query('UPDATE employees SET EmployeeName = ?, Email = ?, Mobile = ?, RoleID = ?, FactoryID = ? WHERE EmployeeID = ?', [EmployeeName, Mobile, Email, Role, FactoryID, EmployeeID]);
         } catch (error) {
             logger.error('Error updating Employee:', error);
         }
@@ -46,7 +47,15 @@ const EmployeeModel = {
         } catch (error) {
             logger.error('Error deleting Employee:', error);
         }
+    },
+    driversWithNoVehicleMappings: async () => {
+        try {
+            return await query('SELECT e.EmployeeID, e.EmployeeName, e.JoiningDate, e.Email, e.Mobile, e.Password, e.RoleID, e.FactoryID FROM teacooperative.employees AS e LEFT JOIN teacooperative.vehiclemappings AS v ON e.EmployeeID = v.DriverID WHERE e.RoleID = 11 AND v.DriverID IS NULL');
+        } catch (error) {
+            logger.error('Error getting Drivers with no vehicle mappings:', error);
+        }
     }
+
 };
 
 module.exports = EmployeeModel;

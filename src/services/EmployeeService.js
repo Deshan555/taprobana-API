@@ -82,17 +82,18 @@ const EmployeeController = {
     updateEmployee: async (req, res) => {
         const {EmployeeID} = req.params;
         const {EmployeeName, EmployeeMobile, EmployeeEmail, EmployeeType, FactoryID} = req.body;
+        console.log(FactoryID);
         try {
             const getEmployee = await EmployeeModel.getEmployeeByID(EmployeeID);
             if(getEmployee.length === 0) return errorResponse(res, 'Employee not found', 404);
             const result = await EmployeeModel.updateEmployee(EmployeeID, EmployeeName, EmployeeMobile, EmployeeEmail, EmployeeType, FactoryID);
-            if (result.affectedRows === 0) return errorResponse(res, 'Error updating employee', 500);
+            if (result?.affectedRows === 0) return errorResponse(res, 'Error updating employee', 500);
             const response = {
                 employee: await EmployeeModel.getEmployeeByID(EmployeeID),
                 role : await RoleModel.getRoleByID(EmployeeType),
                 factory : await FactoryModel.getFactoryByID(FactoryID)
             }
-            const emailTemplate = TemplateProvider.generateUpdateEmail(EmployeeName, EmployeeEmail);
+            const emailTemplate = TemplateProvider.genrateProfileUpdateTemplate(EmployeeName, EmployeeEmail);
             EmailService.sendSingleEmail({
                 to: EmployeeEmail,
                 subject: 'Employee Details Update',
@@ -114,6 +115,17 @@ const EmployeeController = {
         } catch (error) {
             console.error('Error deleting employee:', error);
             errorResponse(res, 'Error Occurred while deleting employee : '+error);
+        }
+    },
+    driversWithNoVehicleMappings: async (req, res) => {
+        try {
+            const results = await EmployeeModel.driversWithNoVehicleMappings();
+            console.log(results);
+            if(results.length === 0) return errorResponse(res, 'No drivers found', 404);
+            successResponse(res, 'Drivers with no vehicle mappings retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting drivers with no vehicle mappings:', error);
+            errorResponse(res, 'Error Occurred while fetching drivers with no vehicle mappings : '+error);
         }
     }
 };
