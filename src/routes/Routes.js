@@ -88,6 +88,9 @@ router.delete('/vehicles/drop/:VehicleID', VehicleController.deleteVehicleMappin
 
 // main endpoints for dailyTeaCollection-Routes
 router.get('/dailyTeaCollection', DailyTeaCollectionController.getAllDailyTeaCollection);
+router.post('/dailyTeaCollection/admin/add', DailyTeaCollectionController.addDataByAdminSideTeaCollection);
+router.post('/dailyTeaCollection/admin/addBulk', DailyTeaCollectionController.addBulkRecordsImportFromAdmin);
+router.post('/dailyTeaCollection/getDataBetweenTwoDates', DailyTeaCollectionController.getAllDataBetweenTwoDates);
 router.post('/dailyTeaCollection/add', DailyTeaCollectionController.addDailyTeaCollection);
 router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionController.getDailyTeaCollectionByID);
 router.put('/dailyTeaCollection/update/:DailyTeaCollectionID', DailyTeaCollectionController.updateDailyTeaCollection);
@@ -112,10 +115,12 @@ router.get('/fieldInfo/getByRouteID/:routeID', FieldInfoController.getFieldsByRo
 
 // main endpoints for roadRouting-Routes
 router.get('/roadRouting', RoadRoutingController.gatAllRoadRouting);
+router.get('/roadRouting/withoutMappings', RoadRoutingController.getRoutingWithOutMappings);
 router.post('/roadRouting/add', RoadRoutingController.addRoadRouting);
 router.get('/roadRouting/:RoadRoutingID', RoadRoutingController.getRoadRoutingByID);
 router.put('/roadRouting/update/:RoadRoutingID', RoadRoutingController.updateRoadRouting);
 router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRoadRouting);
+
 
 // Location Service Main Endpoints
 router.get('/location', LocationService.fetchAllLocationDetails);
