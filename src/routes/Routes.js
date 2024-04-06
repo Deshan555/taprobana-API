@@ -33,6 +33,7 @@ router.post('/auth/refreshEmployee', AuthController.newAuthTokenByRefreshTokenEm
 
 // main endpoints for customer-Routes
 router.post('/customers/add', CustomerController.addCustomer);
+router.post('/customers/addBulk', CustomerController.addBulkCustomers);
 // router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
 router.get('/customers', CustomerController.getAllCustomers);
 // router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken, CustomerController.getCustomerByID);
