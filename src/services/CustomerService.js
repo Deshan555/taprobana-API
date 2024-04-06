@@ -1,6 +1,8 @@
 const CustomerModel = require('../models/Customers');
 const { successResponse, errorResponse } = require('../utils/responseUtils');
 const {hashPassword} = require('../utils/bcrypt');
+const EmailService = require('../services/MailService');
+const TemplateProvider = require('../services/TemplateProvider');
 
 const CustomerController = {
     sampleEndPoint: async (req, res) => {
@@ -30,6 +32,7 @@ const CustomerController = {
         }
     },
     addCustomer: async (req, res) => {
+        // console.log(req);
         const { customerName, customerMobile, customerAddress, customerEmail, customerType, customerPassword, factoryID, customerNIC } = req.body;
         console.log( customerName, customerMobile, customerAddress, customerEmail, customerType, customerPassword, factoryID)
         if (!customerName || !customerMobile || !customerAddress || !customerEmail || !customerType || !customerPassword || !factoryID || !customerNIC) {
@@ -61,6 +64,50 @@ const CustomerController = {
             errorResponse(res, 'Error Occurred while adding customer : ' + error);
         }
     },
+    addBulkCustomers: async (req, res) => {
+        const failList = [];
+        try{
+            const dataLength = req.body.length;
+            const data = req.body;
+            for (let i = 0; i < dataLength; i++) {
+
+                const emailResults = await CustomerModel.getCustomerByEmail(data[i]?.customerEmail);
+                const identityCardNumberResults = await CustomerModel.getCustomerByIdentitiCardNumber(data[i]?.customerNIC);
+                
+                if (emailResults.length !== 0 || identityCardNumberResults.length !== 0) {
+                    failList.push(data[i]);
+                    continue;
+                } else {
+                    const userPassword = Math.random().toString(36).slice(-8);
+                    const CustomerID = Math.floor(Math.random() * 1000000000);
+                    const RegistrationDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                    const hashedPassword = await hashPassword(userPassword);
+                    try{
+                        const result = await CustomerModel.addCustomer(CustomerID, data[i].customerName, data[i].customerMobile, data[i].customerAddress, data[i].customerEmail, data[i].customerType, RegistrationDate, hashedPassword, data[i].customerNIC, data[i].factoryID);
+                        const templateProvider = TemplateProvider.genarateRegisterCustomer(data[i].customerName, data[i].customerEmail, userPassword);
+                        EmailService.sendSingleEmail({
+                            to: data[i].customerEmail,
+                            subject: 'Customer Registration',
+                            text: '',
+                            html: templateProvider
+                        });
+                    } catch (error) {
+                        failList.push(data[i]);
+                    }
+                }
+            }
+            const response = {
+                totalRecords : dataLength,
+                successCount : dataLength - failList.length,
+                failedCount : failList.length,
+                failedList: failList
+            };
+            successResponse(res, 'Bulk Processing Done Successfully', response);
+        } catch (error) {
+            console.error('Error adding bulk customers:', error);
+            errorResponse(res, 'Error Occurred while adding bulk customers : ' + error);
+        }
+    },
     getCustomerByID: async (req, res) => {
         const {CustomerID} = req.params;
         try {
@@ -82,11 +129,11 @@ const CustomerController = {
             CustomerEmail,
             CustomerType,
             RegistrationDate,
-            TeaLeavesProvided,
             FactoryID
         } = req.body;
+        console.log(CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, FactoryID);
         try {
-            const result = await CustomerModel.updateCustomer(CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType, RegistrationDate, TeaLeavesProvided, FactoryID);
+            const result = await CustomerModel.updateCustomer(CustomerID, CustomerName, CustomerMobile, CustomerAddress, CustomerEmail, CustomerType ,FactoryID);
             successResponse(res, 'Customer updated successfully', result);
         } catch (error) {
             console.error('Error updating customer:', error);
