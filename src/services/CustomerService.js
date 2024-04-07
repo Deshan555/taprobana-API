@@ -67,13 +67,11 @@ const CustomerController = {
     addBulkCustomers: async (req, res) => {
         const failList = [];
         try{
-            const dataLength = req.body.length;
-            const data = req.body;
+            const dataLength = req?.body?.data?.length;
+            const data = req?.body?.data;
             for (let i = 0; i < dataLength; i++) {
-
                 const emailResults = await CustomerModel.getCustomerByEmail(data[i]?.customerEmail);
                 const identityCardNumberResults = await CustomerModel.getCustomerByIdentitiCardNumber(data[i]?.customerNIC);
-                
                 if (emailResults.length !== 0 || identityCardNumberResults.length !== 0) {
                     failList.push(data[i]);
                     continue;
