@@ -90,13 +90,15 @@ const AuthControl = {
     },
     authEmployee: async (req, res) => {
         const {email, password} = req.body;
+        console.log(email, password);
         try{
             const results = await EmployeeModel.getEmployeeByEmail(email);
-            const empRole = await RoleModel.getRoleByID(results[0].RoleID);
             let passwordFromDataBase = '';
+            let empRole = '';
             if(results.length === 0)
                 return errorResponse(res, 'Can Not Find Employee With Given Email Address', 404);
             else
+                empRole = await RoleModel.getRoleByID(results[0].RoleID);
                 passwordFromDataBase = results[0].Password;
                 const passwordMatch = await bcrypt.comparePassword(password, passwordFromDataBase);
                 if(passwordMatch === false)
@@ -113,11 +115,23 @@ const AuthControl = {
                     console.log('Delete Token : '+deleteToken);
                     const accessToken = await generateAccessToken({ signData });
                     const refreshToken = await generateRefreshToken({ signData });
+                    const authenticatedTime = new Date();
+                    const accessTokenExpireDate = new Date(authenticatedTime.getTime() + 3 * 24 * 60 * 60 * 1000);
+                    const refreshTokenExpireDate = new Date(authenticatedTime.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    const userRole = empRole[0].RoleName;
+                    const authEmplyeeID = results[0].EmployeeID;
                     const pushTokens = await JWTTokenModel.pushTokenEmployee(accessToken, refreshToken, results[0].EmployeeID);
                     if(pushTokens.affectedRows === 0) {
                         return errorResponse(res, 'Error Occurred while generating access token : ' + err);
                     }else {
-                        successResponse(res, 'Employee authenticated successfully', {accessToken, refreshToken});
+                        successResponse(res, 'Employee authenticated successfully', {
+                            accessToken, 
+                            refreshToken,
+                            accessTokenExpireDate,
+                            refreshTokenExpireDate,
+                            userRole,
+                            authEmplyeeID                     
+                        });
                     }
                 }
         } catch (error) {
