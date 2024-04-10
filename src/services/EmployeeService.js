@@ -56,6 +56,94 @@ const EmployeeController = {
             errorResponse(res, 'Error Occurred while adding employee : '+error);
         }
     },
+    // addBulkCustomers: async (req, res) => {
+    //     const failList = [];
+    //     try{
+    //         const dataLength = req.body.length;
+    //         const data = req.body;
+    //         for (let i = 0; i < dataLength; i++) {
+
+    //             const emailResults = await CustomerModel.getCustomerByEmail(data[i]?.customerEmail);
+    //             const identityCardNumberResults = await CustomerModel.getCustomerByIdentitiCardNumber(data[i]?.customerNIC);
+                
+    //             if (emailResults.length !== 0 || identityCardNumberResults.length !== 0) {
+    //                 failList.push(data[i]);
+    //                 continue;
+    //             } else {
+    //                 const userPassword = Math.random().toString(36).slice(-8);
+    //                 const CustomerID = Math.floor(Math.random() * 1000000000);
+    //                 const RegistrationDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    //                 const hashedPassword = await hashPassword(userPassword);
+    //                 try{
+    //                     const result = await CustomerModel.addCustomer(CustomerID, data[i].customerName, data[i].customerMobile, data[i].customerAddress, data[i].customerEmail, data[i].customerType, RegistrationDate, hashedPassword, data[i].customerNIC, data[i].factoryID);
+    //                     const templateProvider = TemplateProvider.genarateRegisterCustomer(data[i].customerName, data[i].customerEmail, userPassword);
+    //                     EmailService.sendSingleEmail({
+    //                         to: data[i].customerEmail,
+    //                         subject: 'Customer Registration',
+    //                         text: '',
+    //                         html: templateProvider
+    //                     });
+    //                 } catch (error) {
+    //                     failList.push(data[i]);
+    //                 }
+    //             }
+    //         }
+    //         const response = {
+    //             totalRecords : dataLength,
+    //             successCount : dataLength - failList.length,
+    //             failedCount : failList.length,
+    //             failedList: failList
+    //         };
+    //         successResponse(res, 'Bulk Processing Done Successfully', response);
+    //     } catch (error) {
+    //         console.error('Error adding bulk customers:', error);
+    //         errorResponse(res, 'Error Occurred while adding bulk customers : ' + error);
+    //     }
+    // },
+    addBulkEmployees: async (req, res) => {
+        try{
+            const failList = [];
+            const dataLength = req?.body?.data?.length;
+            const data = req?.body?.data;
+            for (let i = 0; i < dataLength; i++) {
+                const emailResults = await EmployeeModel.getEmployeeByEmail(data[i]?.EmployeeEmail);
+                const checkByFactoryID = await FactoryModel.getFactoryByID(data[i]?.FactoryID);
+                const checkByRoleID = await RoleModel.getRoleByID(data[i]?.EmployeeType);
+                if (emailResults.length !== 0 || checkByFactoryID.length === 0 || checkByRoleID.length === 0) {
+                    failList.push(data[i]);
+                    continue;
+                } else {
+                    const userPassword = Math.random().toString(36).slice(-8);
+                    const EmployeeID = Math.floor(Math.random() * 1000000000);
+                    const RegistrationDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                    const hashedPassword = await hashPassword(userPassword);
+                    try{
+                        const result = await EmployeeModel.addEmployee(EmployeeID, data[i].EmployeeName, RegistrationDate, data[i].EmployeeEmail, data[i].EmployeeMobile, data[i].EmployeeType, data[i].FactoryID, hashedPassword);
+                        const templateProvider = TemplateProvider.generateRegistrationEmail(data[i].EmployeeName, data[i].EmployeeEmail, userPassword);
+                        EmailService.sendSingleEmail({
+                            to: data[i].EmployeeEmail,
+                            subject: 'Employee Registration',
+                            text: '',
+                            html: templateProvider
+                        });
+                    } catch (error) {
+                        failList.push(data[i]);
+                    }
+                }
+            }
+            const response = {
+                totalRecords : dataLength,
+                successCount : dataLength - failList.length,
+                failedCount : failList.length,
+                failedList: failList
+            };
+            successResponse(res, 'Bulk Processing Done Successfully', response);
+        } catch (error) {
+            console.error('Error adding bulk customers:', error);
+            errorResponse(res, 'Error Occurred while adding bulk customers : ' + error);
+        }
+          
+    },
     getEmployeeByEmail: async (req, res) => {
         const {EmployeeEmail} = req.params;
         try {
@@ -126,6 +214,16 @@ const EmployeeController = {
         } catch (error) {
             console.error('Error getting drivers with no vehicle mappings:', error);
             errorResponse(res, 'Error Occurred while fetching drivers with no vehicle mappings : '+error);
+        }
+    },
+    collectorsWithOutRoutingMapping : async (req, res) => {
+        try {
+            const results = await EmployeeModel.colleectorsWithOutRoutingMappings();
+            if(results.length === 0) return errorResponse(res, 'No collectors found', 404);
+            successResponse(res, 'Collectors with no routing mappings retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting collectors with no routing mappings:', error);
+            errorResponse(res, 'Error Occurred while fetching collectors with no routing mappings : '+error);
         }
     }
 };
