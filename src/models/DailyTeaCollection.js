@@ -10,6 +10,13 @@ const DailyTeaCollectionModel = {
             throw error;
         }
     },
+    getAllDataBetweenTwoDates: async (startDate, endDate) => {
+        try {
+            return await query('SELECT * FROM dailyteacollection WHERE CollectionDate BETWEEN ? AND ?', [startDate, endDate]);
+        } catch (error) {
+            throw error;
+        }
+    },
     addDailyTeaCollection: async (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, FieldID, EmployeeID) => {
         try {
             return await query('INSERT INTO dailyteacollection (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, FieldID, EmployeeID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, FieldID, EmployeeID]);
@@ -37,7 +44,45 @@ const DailyTeaCollectionModel = {
         } catch (error) {
             throw error;
         }
+    },
+
+//     INSERT INTO `teacooperative`.`dailyteacollection`
+// (`CollectionID`,
+// `CollectionDate`,
+// `TeaWeightCollected`,
+// `WaterWeightCollected`,
+// `ActualTeaWeight`,
+// `BaseLongitude`,
+// `BaseLatitude`,
+// `RouteID`,
+// `FieldID`,
+// `EmployeeID`,
+// `Remark`,
+// `CreationType`)
+// VALUES
+// (<{CollectionID: }>,
+// <{CollectionDate: }>,
+// <{TeaWeightCollected: }>,
+// <{WaterWeightCollected: }>,
+// <{ActualTeaWeight: }>,
+// <{BaseLongitude: }>,
+// <{BaseLatitude: }>,
+// <{RouteID: }>,
+// <{FieldID: }>,
+// <{EmployeeID: }>,
+// <{Remark: }>,
+// <{CreationType: }>);
+
+adminCreationFieldRecord : async (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, RouteID, FieldID, EmployeeID, Remark, CreationType) => {
+    try {
+        return await query
+        ('INSERT INTO dailyteacollection (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, RouteID, FieldID, EmployeeID, Remark, CreationType) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+        [CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, RouteID, FieldID, EmployeeID, Remark, CreationType]);
+    } catch (error) {
+        throw error;
     }
+}
+
 };
 
 module.exports = DailyTeaCollectionModel;
