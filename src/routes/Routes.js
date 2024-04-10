@@ -54,8 +54,10 @@ router.delete('/roles/drop/:RoleID', RoleController.deleteRole);
 // main endpoints for employee-Routes
 router.get('/employees', EmployeeController.getAllEmployees);
 router.get('/employees/drivers', EmployeeController.driversWithNoVehicleMappings);
+router.get('/employees/collectors', EmployeeController.collectorsWithOutRoutingMapping);
 router.post('/employees/add', EmployeeController.addEmployee);
-router.get('/employees/:EmployeeID', EmployeeController.getEmployeeByID);
+router.post('/employees/addBulkEmployees', EmployeeController.addBulkEmployees);
+router.get('/employees/:EmployeeID', TokenAuth.authenticateToken('empProfile'), EmployeeController.getEmployeeByID);
 router.put('/employees/update/:EmployeeID', EmployeeController.updateEmployee);
 router.delete('/employees/drop/:EmployeeID', EmployeeController.deleteEmployee);
 
@@ -92,6 +94,8 @@ router.get('/dailyTeaCollection', DailyTeaCollectionController.getAllDailyTeaCol
 router.post('/dailyTeaCollection/admin/add', DailyTeaCollectionController.addDataByAdminSideTeaCollection);
 router.post('/dailyTeaCollection/admin/addBulk', DailyTeaCollectionController.addBulkRecordsImportFromAdmin);
 router.post('/dailyTeaCollection/getDataBetweenTwoDates', DailyTeaCollectionController.getAllDataBetweenTwoDates);
+router.post('/dailyTeaCollection/mobile/add', TokenAuth.authenticateToken('mobileApp'), DailyTeaCollectionController.addDailyTeaCollectionByMobile);
+
 router.post('/dailyTeaCollection/add', DailyTeaCollectionController.addDailyTeaCollection);
 router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionController.getDailyTeaCollectionByID);
 router.put('/dailyTeaCollection/update/:DailyTeaCollectionID', DailyTeaCollectionController.updateDailyTeaCollection);
@@ -112,10 +116,11 @@ router.put('/fieldInfo/update/:FieldID', FieldInfoController.updateFieldInfo);
 router.delete('/fieldInfo/drop/:FieldID', FieldInfoController.deleteFieldInfo);
 router.get('/fieldInfo/getByZoneID/:zoneID', FieldInfoController.getFieldsByZoneID);
 router.get('/fieldInfo/getByFactoryID/:factoryID', FieldInfoController.getFieldsByFactoryID);
-router.get('/fieldInfo/getByRouteID/:routeID', FieldInfoController.getFieldsByRouteID);
+router.get('/fieldInfo/getByRouteID/:routeID', TokenAuth.authenticateToken('mobileApp'), FieldInfoController.getFieldsByRouteID);
 
 // main endpoints for roadRouting-Routes
 router.get('/roadRouting', RoadRoutingController.gatAllRoadRouting);
+router.get('/roadRouting/collectors/:CollectorID',  TokenAuth.authenticateToken('mobileApp'), RoadRoutingController.getRoadRoutingByCollector);
 router.get('/roadRouting/withoutMappings', RoadRoutingController.getRoutingWithOutMappings);
 router.post('/roadRouting/add', RoadRoutingController.addRoadRouting);
 router.get('/roadRouting/:RoadRoutingID', RoadRoutingController.getRoadRoutingByID);
