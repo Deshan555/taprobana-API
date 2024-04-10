@@ -10,9 +10,30 @@ const FertilizerInfoModel = {
             throw error;
         }
     },
-    addFertilizerInfo: async (FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID) => {
+            // INSERT INTO `fertilizerinfo` (
+        //     `FertilizerName`,
+        //     `CodeName`,
+        //     `FertilizerType`,
+        //     `FertilizerPrice`,
+        //     `FertilizerQuantity`,
+        //     `VendorName`,
+        //     `FertilizerDescription`,
+        //     `InstructionsToStore`,
+        //     `InstructionsToUse`,
+        //     `LastUpdate`
+        // ) VALUES (
+    addFertilizerInfo: async (FertilizerID, FertilizerName, CodeName, FertilizerType, FertilizerPrice, FertilizerQuantity, VendorName, FertilizerDescription, InstructionsToStore, InstructionsToUse) => {
         try {
-            const results = await query('INSERT INTO fertilizerinfo (FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID) VALUES (?, ?, ?, ?, ?, ?, ?)', [FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID]);
+            // const results = await query('INSERT INTO fertilizerinfo (FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID) VALUES (?, ?, ?, ?, ?, ?, ?)', [FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID]);
+            const results = await query('INSERT INTO fertilizerinfo (FertilizerID, FertilizerName, CodeName, FertilizerType, FertilizerPrice, FertilizerQuantity, VendorName, FertilizerDescription, InstructionsToStore, InstructionsToUse) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [FertilizerID, FertilizerName, CodeName, FertilizerType, FertilizerPrice, FertilizerQuantity, VendorName, FertilizerDescription, InstructionsToStore, InstructionsToUse]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
+    updateFertilizerInfo: async (FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerPrice, FertilizerDescription, VendorName, CodeName, InstructionsToStore, InstructionsToUse) => {
+        try {
+            const results = await query('UPDATE fertilizerinfo SET FertilizerName = ?, FertilizerType = ?, FertilizerQuantity = ?, FertilizerPrice = ?, FertilizerDescription = ?, VendorName = ?, CodeName = ?, InstructionsToStore = ?, InstructionsToUse = ? WHERE FertilizerID = ?', [FertilizerName, FertilizerType, FertilizerQuantity, FertilizerPrice, FertilizerDescription, VendorName, CodeName, InstructionsToStore, InstructionsToUse, FertilizerID]);
             return results;
         } catch (error) {
             throw error;
@@ -21,14 +42,6 @@ const FertilizerInfoModel = {
     getFertilizerInfoByID: async (FertilizerID) => {
         try {
             const results = await query('SELECT * FROM fertilizerinfo WHERE FertilizerID = ?', [FertilizerID]);
-            return results;
-        } catch (error) {
-            throw error;
-        }
-    },
-    updateFertilizerInfo: async (FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID) => {
-        try {
-            const results = await query('UPDATE fertilizerinfo SET FertilizerName = ?, FertilizerType = ?, FertilizerQuantity = ?, FertilizerCost = ?, FertilizerDate = ?, FieldID = ? WHERE FertilizerID = ?', [FertilizerName, FertilizerType, FertilizerQuantity, FertilizerCost, FertilizerDate, FieldID, FertilizerID]);
             return results;
         } catch (error) {
             throw error;
