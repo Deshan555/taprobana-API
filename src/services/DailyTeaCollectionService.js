@@ -30,12 +30,34 @@ const DailyTeaCollectionController = {
     addDailyTeaCollection: async (req, res) => {
         const { DailyTeaCollectionID, TeaCollectionID, FactoryID, TeaCollectionDate, TeaCollectionTime, TeaCollectionQuantity, TeaCollectionDescription } = req.body;
 
-        if (!DailyTeaCollectionID || !TeaCollectionID || !FactoryID || !TeaCollectionDate || !TeaCollectionTime || !TeaCollectionQuantity || !TeaCollectionDescription) {
-            return errorResponse(res, 'DailyTeaCollectionID, TeaCollectionID, FactoryID, TeaCollectionDate, TeaCollectionTime, TeaCollectionQuantity and TeaCollectionDescription are required fields', 400);
+        if (!DailyTeaCollectionID || !TeaCollectionID || !FactoryID || !TeaCollectionDate || !TeaCollectionTime || !TeaCollectionQuantity) {
+            return errorResponse(res, 'DailyTeaCollectionID, TeaCollectionID, FactoryID, TeaCollectionDate, TeaCollectionTime, TeaCollectionQuantity  are required fields', 400);
         }
         try {
             const result = await DailyTeaCollectionModel.addDailyTeaCollection(DailyTeaCollectionID, TeaCollectionID, FactoryID, TeaCollectionDate, TeaCollectionTime, TeaCollectionQuantity, TeaCollectionDescription);
             successResponse(res, 'DailyTeaCollection added successfully', result);
+        } catch (error) {
+            console.error('Error adding dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while adding dailyTeaCollection : '+error);
+        }
+    },
+    addDailyTeaCollectionByMobile : async (req, res) => {
+        const { collectionDate, teaWeightCollected, waterWeightCollected, actualTeaWeight, fieldID, employeeID , latitude, longitude, remark, RouteID} = req.body;
+        if (!collectionDate || !teaWeightCollected || !waterWeightCollected || !actualTeaWeight || !fieldID || !employeeID) {
+            return errorResponse(res, 'collectionDate, teaWeightCollected, waterWeightCollected, actualTeaWeight, fieldID, employeeID are required fields', 400);
+        }
+        try {
+            const checkRouteID = await FieldInfoModel.getFieldInfoByID(fieldID);
+            if (checkRouteID.length === 0) return errorResponse(res, 'Field not found', 404);
+
+            const checkEmployeeID = await EmployeeModel.getEmployeeByID(employeeID);
+            if (checkEmployeeID.length === 0) return errorResponse(res, 'Employee not found', 404);
+            
+            const collectionID = Math.floor(Math.random() * 90000) + 10000;
+            const CreationType = 'MOBILE';
+            const result = await DailyTeaCollectionModel.adminCreationFieldRecord
+            (collectionID, collectionDate, teaWeightCollected, waterWeightCollected, actualTeaWeight, longitude, latitude, RouteID, fieldID, employeeID, remark, CreationType);
+            successResponse(res, 'DailyTeaCollection added successfully by mobile', result);
         } catch (error) {
             console.error('Error adding dailyTeaCollection:', error);
             errorResponse(res, 'Error Occurred while adding dailyTeaCollection : '+error);
@@ -59,10 +81,11 @@ const DailyTeaCollectionController = {
         }
     },
     addBulkRecordsImportFromAdmin : async (req, res) => {
+        console.log(req.body);
         const failedList = [];
         try {
-            const dataLength = req.body.length;
-            const data = req.body;
+            const dataLength = req?.body?.data?.length;
+            const data = req?.body?.data;
             for (let i = 0; i < dataLength; i++) {
                 const collectionID = Math.floor(Math.random() * 90000) + 10000;
                 const fieldInformations = await FieldInfoModel.getFieldInfoByID(data[i].fieldID);
