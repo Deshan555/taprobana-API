@@ -163,6 +163,28 @@ CREATE TABLE FertilizerInfo
     FOREIGN KEY (FieldID) REFERENCES FieldInfo (FieldID)
 );
 
+CREATE TABLE FertilizerApproval 
+(
+    ORDER_ID INT PRIMARY KEY AUTO_INCREMENT,
+    FertilizerID INT,
+    FieldID INT,
+    OrderQuentity DECIMAL(10, 2) NOT NULL,
+    OrderDate DATE NOT NULL,
+    RequestedDeadLine DATE NOT NULL,
+    CustomerOrderStatus ENUM('APPROVED', 'REJECTED', 'PENDING') NOT NULL,
+    ApprovalStatus ENUM('APPROVED', 'REJECTED', 'PENDING') NOT NULL,
+    ApprovedQuantity DECIMAL(10, 2) NOT NULL,
+    ApprovedBy INT,
+    PaymentStatus ENUM('PAID', 'UNPAID') NOT NULL,
+    Remarks VARCHAR(255) NOT NULL,
+    ApproveDate DATE NOT NULL,
+    SupposedDeliveryDate DATE NOT NULL,
+    IsDelivered ENUM('YES', 'NO') NOT NULL,
+    FOREIGN KEY (FertilizerID) REFERENCES FertilizerInfo (FertilizerID),
+    FOREIGN KEY (FieldID) REFERENCES FieldInfo (FieldID),
+    FOREIGN KEY (ApprovedBy) REFERENCES Employees (EmployeeID)
+);
+
 -- Table for Daily Tea Collection
 CREATE TABLE DailyTeaCollection
 (
