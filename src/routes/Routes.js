@@ -95,6 +95,8 @@ router.post('/dailyTeaCollection/admin/add', DailyTeaCollectionController.addDat
 router.post('/dailyTeaCollection/admin/addBulk', DailyTeaCollectionController.addBulkRecordsImportFromAdmin);
 router.post('/dailyTeaCollection/getDataBetweenTwoDates', DailyTeaCollectionController.getAllDataBetweenTwoDates);
 router.post('/dailyTeaCollection/mobile/add', TokenAuth.authenticateToken('mobileApp'), DailyTeaCollectionController.addDailyTeaCollectionByMobile);
+router.post('/dailyTeaCollection/dailySum', DailyTeaCollectionController.getSumOfSpecificDate);
+router.post('/dailyTeaCollection/bulkSum', DailyTeaCollectionController.getBulkCollection);
 
 router.post('/dailyTeaCollection/add', DailyTeaCollectionController.addDailyTeaCollection);
 router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionController.getDailyTeaCollectionByID);
