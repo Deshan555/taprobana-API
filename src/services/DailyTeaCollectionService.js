@@ -49,7 +49,7 @@ const DailyTeaCollectionController = {
                 const dailySum = await DailyTeaCollectionModel.getSumOfActualTeaWeight(pastDate?.toISOString().split('T')[0]);
                 let responseJson = {
                     date : pastDate.toISOString().split('T')[0],
-                    sum : dailySum[0]?.TotalTeaWeight
+                    sum : dailySum[0]?.TotalTeaWeight ? dailySum[0]?.TotalTeaWeight : 0
                 }
                 datesArray.push(responseJson);
             }
