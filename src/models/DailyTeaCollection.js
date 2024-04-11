@@ -17,6 +17,14 @@ const DailyTeaCollectionModel = {
             throw error;
         }
     },
+    // get sum of `ActualTeaWeight` of given date 
+    getSumOfActualTeaWeight: async (CollectionDate) => {
+        try {
+            return await query('SELECT SUM(ActualTeaWeight) as TotalTeaWeight FROM dailyteacollection WHERE CollectionDate = ?', [CollectionDate]);
+        } catch (error) {
+            throw error;
+        }
+    },
     addDailyTeaCollection: async (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, FieldID, EmployeeID) => {
         try {
             return await query('INSERT INTO dailyteacollection (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, FieldID, EmployeeID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, FieldID, EmployeeID]);
