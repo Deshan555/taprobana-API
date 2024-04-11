@@ -27,6 +27,38 @@ const DailyTeaCollectionController = {
             errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
         }
     },
+    getSumOfSpecificDate : async(req, res) => {
+        const { specificDate } = req.body;
+        try {
+            const results = await DailyTeaCollectionModel.getSumOfActualTeaWeight(specificDate);
+            if(results.length === 0) return errorResponse(res, 'No dailyTeaCollection found', 404);
+            successResponse(res, 'DailyTeaCollection retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
+        }
+    },
+    getBulkCollection : async (req, res) => {
+        const { startDate, numOfDays } = req.body;
+        try {
+            var datesArray = [];
+            var currentDate = new Date(startDate);
+            for (var i = 0; i < numOfDays; i++) {
+                var pastDate = new Date(currentDate);
+                pastDate.setDate(currentDate.getDate() - i);
+                const dailySum = await DailyTeaCollectionModel.getSumOfActualTeaWeight(pastDate?.toISOString().split('T')[0]);
+                let responseJson = {
+                    date : pastDate.toISOString().split('T')[0],
+                    sum : dailySum[0]?.TotalTeaWeight
+                }
+                datesArray.push(responseJson);
+            }
+            successResponse(res, 'DailyTeaCollection retrieved successfully', datesArray)
+        } catch (error) {
+            console.error('Error getting dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
+        }
+    },
     addDailyTeaCollection: async (req, res) => {
         const { DailyTeaCollectionID, TeaCollectionID, FactoryID, TeaCollectionDate, TeaCollectionTime, TeaCollectionQuantity, TeaCollectionDescription } = req.body;
 
