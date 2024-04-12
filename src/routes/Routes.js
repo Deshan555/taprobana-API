@@ -16,6 +16,7 @@ const TokenAuth = require('../security/TokenAuth');
 const WeatherController = require('../services/WeatherService');
 const LocationService = require('../services/LocationService');
 const EmailService = require('../services/MailService');
+const ChartsController = require('../services/Dashboards');
 
 
 // demo route list
@@ -132,5 +133,9 @@ router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRo
 
 // Location Service Main Endpoints
 router.get('/location', LocationService.fetchAllLocationDetails);
+
+// dashboards stats
+router.get('/dashboard/stats', ChartsController.getDashboardStats);
+router.get('/dashboard/collectionSum/:TargetDate', ChartsController.getCollectionSumOfGivenDate);
 
 module.exports = router;
