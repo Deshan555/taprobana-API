@@ -1,7 +1,6 @@
 const { query } = require('../config/database');
 const logger = require('../config/logger');
 
-// DailyTeaCollectionModel is an object that contains functions
 const DailyTeaCollectionModel = {
     getAllDailyTeaCollection: async () => {
         try {
