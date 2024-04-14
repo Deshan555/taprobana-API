@@ -17,6 +17,7 @@ const WeatherController = require('../services/WeatherService');
 const LocationService = require('../services/LocationService');
 const EmailService = require('../services/MailService');
 const ChartsController = require('../services/Dashboards');
+const FertilizersApprovalService = require('../services/FertilizersApprovalService');
 
 
 // demo route list
@@ -130,9 +131,15 @@ router.get('/roadRouting/:RoadRoutingID', RoadRoutingController.getRoadRoutingBy
 router.put('/roadRouting/update/:RoadRoutingID', RoadRoutingController.updateRoadRouting);
 router.delete('/roadRouting/drop/:RoadRoutingID', RoadRoutingController.deleteRoadRouting);
 
-
 // Location Service Main Endpoints
 router.get('/location', LocationService.fetchAllLocationDetails);
+
+// fetilizers approvals
+router.post('/fertilizers/order/place', FertilizersApprovalService.placeOrder);
+router.get('/fertilizers/order/getall', FertilizersApprovalService.getallOrdersList);
+router.get('/fertilizers/order/getByFertilizerID/:FertilizerID', FertilizersApprovalService.getOrdersByFertilizerID);
+router.put('/fertilizers/order/admin/approve/:ORDER_ID', FertilizersApprovalService.orderApprovalByAdmin);
+
 
 // dashboards stats
 router.get('/dashboard/stats', ChartsController.getDashboardStats);
