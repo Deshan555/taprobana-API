@@ -13,8 +13,9 @@ const FertilizerApprovalModal = {
     },
     placeFertilizerOrder: async (FertilizerID, FieldID, OrderQuentity, OrderDate, RequestedDeadLine, CustomerOrderStatus, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered) => {
         try {
-            return await query('INSERT INTO fertilizerapproval (FertilizerID, FieldID, OrderQuentity, OrderDate, RequestedDeadLine, CustomerOrderStatus, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-            [FertilizerID, FieldID, OrderQuentity, OrderDate, RequestedDeadLine, CustomerOrderStatus, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered]);
+            const TrackingID = 'TRC-'+Math.floor(Math.random() * 1000000000);
+            return await query('INSERT INTO fertilizerapproval (TrackingID, FertilizerID, FieldID, OrderQuentity, OrderDate, RequestedDeadLine, CustomerOrderStatus, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+            [TrackingID, FertilizerID, FieldID, OrderQuentity, OrderDate, RequestedDeadLine, CustomerOrderStatus, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered]);
         } catch (error) {
             logger.error('Error in FertilizerApprovalModal.placeFertilizerOrder', error);
             throw error;
@@ -36,10 +37,10 @@ const FertilizerApprovalModal = {
             throw error;
         }
     },
-    adminApprovalOrder: async (ORDER_ID, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered) => {
+    adminApprovalOrder: async (ORDER_ID, ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered, OrderValue) => {
         try {
-            return await query('UPDATE fertilizerapproval SET ApprovalStatus = ?, ApprovedQuantity = ?, ApprovedBy = ?, PaymentStatus = ?, Remarks = ?, ApproveDate = ?, SupposedDeliveryDate = ?, IsDelivered = ? WHERE ORDER_ID = ?', 
-            [ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered, ORDER_ID]);
+            return await query('UPDATE fertilizerapproval SET ApprovalStatus = ?, ApprovedQuantity = ?, ApprovedBy = ?, PaymentStatus = ?, Remarks = ?, ApproveDate = ?, SupposedDeliveryDate = ?, IsDelivered = ?, OrderValue = ? WHERE ORDER_ID = ?', 
+            [ApprovalStatus, ApprovedQuantity, ApprovedBy, PaymentStatus, Remarks, ApproveDate, SupposedDeliveryDate, IsDelivered, OrderValue, ORDER_ID]);
         } catch (error) {
             logger.error('Error in FertilizerApprovalModal.adminApprovalOrder', error);
             throw error;
