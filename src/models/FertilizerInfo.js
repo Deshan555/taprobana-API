@@ -31,6 +31,14 @@ const FertilizerInfoModel = {
             throw error;
         }
     },
+    updateQuntity : async (FertilizerID, FertilizerQuantity) => {
+        try {
+            const results = await query('UPDATE fertilizerinfo SET FertilizerQuantity = ? WHERE FertilizerID = ?', [FertilizerQuantity, FertilizerID]);
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    },
     updateFertilizerInfo: async (FertilizerID, FertilizerName, FertilizerType, FertilizerQuantity, FertilizerPrice, FertilizerDescription, VendorName, CodeName, InstructionsToStore, InstructionsToUse) => {
         try {
             const results = await query('UPDATE fertilizerinfo SET FertilizerName = ?, FertilizerType = ?, FertilizerQuantity = ?, FertilizerPrice = ?, FertilizerDescription = ?, VendorName = ?, CodeName = ?, InstructionsToStore = ?, InstructionsToUse = ? WHERE FertilizerID = ?', [FertilizerName, FertilizerType, FertilizerQuantity, FertilizerPrice, FertilizerDescription, VendorName, CodeName, InstructionsToStore, InstructionsToUse, FertilizerID]);
