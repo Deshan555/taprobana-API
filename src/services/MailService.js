@@ -6,7 +6,7 @@ const MailService = {
     sendSingleEmail : async ({ to, subject, text, html }) => {
         try {
             transporter.sendMail({
-                from: '"Fred Foo 👻" <deshanjayashanka84@gmail.com>',
+                from: '"Thaprobane Notification" <noreply@thaprobane.com.com>',
                 to: to,
                 subject: subject,
                 text: text,
