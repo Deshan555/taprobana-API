@@ -53,33 +53,6 @@ const DailyTeaCollectionModel = {
         }
     },
 
-//     INSERT INTO `teacooperative`.`dailyteacollection`
-// (`CollectionID`,
-// `CollectionDate`,
-// `TeaWeightCollected`,
-// `WaterWeightCollected`,
-// `ActualTeaWeight`,
-// `BaseLongitude`,
-// `BaseLatitude`,
-// `RouteID`,
-// `FieldID`,
-// `EmployeeID`,
-// `Remark`,
-// `CreationType`)
-// VALUES
-// (<{CollectionID: }>,
-// <{CollectionDate: }>,
-// <{TeaWeightCollected: }>,
-// <{WaterWeightCollected: }>,
-// <{ActualTeaWeight: }>,
-// <{BaseLongitude: }>,
-// <{BaseLatitude: }>,
-// <{RouteID: }>,
-// <{FieldID: }>,
-// <{EmployeeID: }>,
-// <{Remark: }>,
-// <{CreationType: }>);
-
 adminCreationFieldRecord : async (CollectionID, CollectionDate, TeaWeightCollected, WaterWeightCollected, ActualTeaWeight, BaseLongitude, BaseLatitude, RouteID, FieldID, EmployeeID, Remark, CreationType) => {
     try {
         return await query
@@ -88,8 +61,35 @@ adminCreationFieldRecord : async (CollectionID, CollectionDate, TeaWeightCollect
     } catch (error) {
         throw error;
     }
-}
-
+},
+getCollectionByFieldIDandDate: async (FieldID, CollectionDate) => {
+    try {
+        return await query('SELECT * FROM dailyteacollection WHERE FieldID = ? AND CollectionDate = ?', [FieldID, CollectionDate]);
+    } catch (error) {
+        throw error;
+    }
+},
+getCollectionByFieldIDandTimeRange: async (FieldID, startDate, endDate) => {
+    try {
+        return await query('SELECT * FROM dailyteacollection WHERE FieldID = ? AND CollectionDate BETWEEN ? AND ?', [FieldID, startDate, endDate]);
+    } catch (error) {
+        throw error;
+    }
+},
+getCollectionSumOverTimeRange: async (FieldID, startDate, endDate) => {
+    try {
+        return await query('SELECT SUM(ActualTeaWeight) as TotalTeaWeight FROM dailyteacollection WHERE FieldID = ? AND CollectionDate BETWEEN ? AND ?', [FieldID, startDate, endDate]);
+    } catch (error) {
+        throw error;
+    }
+},
+getCollectionSumByFieldID: async (FieldID) => {
+    try {
+        return await query('SELECT SUM(ActualTeaWeight) as TotalTeaWeight FROM dailyteacollection WHERE FieldID = ?', [FieldID]);
+    } catch (error) {
+        throw error;
+    }
+},
 };
 
 module.exports = DailyTeaCollectionModel;
