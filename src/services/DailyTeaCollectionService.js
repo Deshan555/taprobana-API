@@ -186,7 +186,51 @@ const DailyTeaCollectionController = {
             console.error('Error deleting dailyTeaCollection:', error);
             errorResponse(res, 'Error Occurred while deleting dailyTeaCollection : ' + error);
         }
-    }
+    },
+    getCollectionSumByFieldIDFunc: async (req, res) => {
+        const {FieldID} = req.params;
+        try {
+            const results = await DailyTeaCollectionModel.getCollectionSumByFieldID(FieldID);
+            if(results.length === 0) return errorResponse(res, 'No dailyTeaCollection found', 404);
+            successResponse(res, 'DailyTeaCollection retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
+        }
+    },
+    getCollectionSumOverTimeRangeFunc: async (req, res) => {
+        const {FieldID, startDate, endDate} = req.body;
+        try {
+            const results = await DailyTeaCollectionModel.getCollectionSumOverTimeRange(FieldID, startDate, endDate);
+            if(results.length === 0) return errorResponse(res, 'No dailyTeaCollection found', 404);
+            successResponse(res, 'DailyTeaCollection retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
+        }
+    },
+    getCollectionByFieldIDandTimeRangeFunc: async (req, res) => {
+        const {FieldID, startDate, endDate} = req.body;
+        try {
+            const results = await DailyTeaCollectionModel.getCollectionByFieldIDandTimeRange(FieldID, startDate, endDate);
+            if(results.length === 0) return errorResponse(res, 'No dailyTeaCollection found', 404);
+            successResponse(res, 'DailyTeaCollection retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
+        }
+    },
+    getCollectionByFieldIDandDateFunc: async (req, res) => {
+        const {FieldID, CollectionDate} = req.body;
+        try {
+            const results = await DailyTeaCollectionModel.getCollectionByFieldIDandDate(FieldID, CollectionDate);
+            if(results.length === 0) return errorResponse(res, 'No dailyTeaCollection found', 404);
+            successResponse(res, 'DailyTeaCollection retrieved successfully', results)
+        } catch (error) {
+            console.error('Error getting dailyTeaCollection:', error);
+            errorResponse(res, 'Error Occurred while fetching dailyTeaCollection : '+error);
+        }
+    },
 };
 
 module.exports = DailyTeaCollectionController;
