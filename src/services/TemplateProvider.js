@@ -222,22 +222,21 @@ const TemplateProvider = {
                                     ${orderData.ApprovalStatus === 'APPROVED' ?
                 `<p>Your order has been approved. You will be notified once the order has been delivered.
                                     <ul style="list-style-type: none">
-                                    <li>Order ID: ${orderData.ORDER_ID}</li>
-                                    <li>Fertilizer ID: ${orderData.FertilizerID}</li>
+                                    <li>Tracking ID: ${orderData.TrackingID}</li>
+                                    <li>Fertilizer Code: ${orderData.FertilizerID}</li>
                                     <li>Field ID: ${orderData.FieldID}</li>
-                                    <li>Order Quantity: ${orderData.OrderQuentity}</li>
+                                    <li>Requested Quantity: ${orderData.OrderQuentity}Kg</li>
+                                    <li>Approved Quantity: ${orderData.ApprovedQuantity}Kg</li>
                                     <li>Order Date: ${new Date(orderData.OrderDate).toLocaleDateString()}</li>
                                     <li>Requested Deadline: ${new Date(orderData.RequestedDeadLine).toLocaleDateString()}</li>
                                     <li>Order Status: ${orderData.CustomerOrderStatus}</li>
                                     <li>Approval Status: ${orderData.ApprovalStatus}</li>
-                                    <li>Approved Quantity: ${orderData.ApprovedQuantity}</li>
                                     <li>Payment Status: ${orderData.PaymentStatus}</li>
-                                    <li>Remarks: ${orderData.Remarks}</li>
+                                    <li>Remark: ${orderData.Remarks}</li>
                                     <li>Approve Date: ${new Date(orderData.ApproveDate).toLocaleDateString()}</li>
                                     <li>Supposed Delivery Date: ${new Date(orderData.SupposedDeliveryDate).toLocaleDateString()}</li>
                                     <li>Is Delivered: ${orderData.IsDelivered}</li>
-                                    <li>Tracking ID: ${orderData.TrackingID}</li>
-                                    <li>Order Value: LKR ${orderData.OrderValue}.00</li>
+                                    <li>Full Payment: LKR ${orderData.OrderValue}.00</li>
                                 </ul>
                                         <pre>
                                         ${orderData.PaymentStatus === 'PAID' ? '<p>Your payment has been received. You will be notified once the order has been delivered.</p>' : ''}
