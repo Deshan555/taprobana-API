@@ -100,6 +100,11 @@ router.post('/dailyTeaCollection/mobile/add', TokenAuth.authenticateToken('mobil
 router.post('/dailyTeaCollection/dailySum', DailyTeaCollectionController.getSumOfSpecificDate);
 router.post('/dailyTeaCollection/bulkSum', DailyTeaCollectionController.getBulkCollection);
 
+router.get('/dailyTeaCollection/fieldSumovertime/:FieldID', DailyTeaCollectionController.getCollectionSumByFieldIDFunc);
+router.post('/dailyTeaCollection/fieldSumByDateRange', DailyTeaCollectionController.getCollectionSumOverTimeRangeFunc);
+router.post('/dailyTeaCollection/fieldDataByDateRange', DailyTeaCollectionController.getCollectionByFieldIDandTimeRangeFunc);
+// router.post('/dailyTeaCollection/fieldSumByDateRangeAndZone', DailyTeaCollectionController.getSumOfSpecificFieldByDateRangeAndZone);
+
 router.post('/dailyTeaCollection/add', DailyTeaCollectionController.addDailyTeaCollection);
 router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionController.getDailyTeaCollectionByID);
 router.put('/dailyTeaCollection/update/:DailyTeaCollectionID', DailyTeaCollectionController.updateDailyTeaCollection);
@@ -138,7 +143,9 @@ router.get('/location', LocationService.fetchAllLocationDetails);
 router.post('/fertilizers/order/place', FertilizersApprovalService.placeOrder);
 router.get('/fertilizers/order/getall', FertilizersApprovalService.getallOrdersList);
 router.get('/fertilizers/order/getByFertilizerID/:FertilizerID', FertilizersApprovalService.getOrdersByFertilizerID);
+router.get('/fertilizers/order/dashboard/getPendingPayments', FertilizersApprovalService.dashboardPendingStatus);
 router.put('/fertilizers/order/admin/approve/:ORDER_ID', FertilizersApprovalService.orderApprovalByAdmin);
+
 
 
 // dashboards stats
