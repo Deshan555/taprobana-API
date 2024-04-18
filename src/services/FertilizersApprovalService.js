@@ -214,6 +214,18 @@ const FertilizersApprovalService = {
             logger.error('Error getting Orders:', error);
             errorResponse(res, 'Error Occurred while fetching Orders : ' + error);
         }
+    },
+    getFertilizerOrdersByFieldID: async (req, res) => {
+        const { fieldID } = req.params;
+        try {
+            const results = await FertilizerApprovalModal.getFertilizerOrdersByFieldID(fieldID);
+            if (results.length === 0) return errorResponse(res, 'No Orders found', 404);
+            successResponse(res, 'Orders retrieved successfully', results)
+        } catch (error) {
+            logger.error('Error getting Orders:', error);
+            errorResponse(res, 'Error Occurred while fetching Orders : ' + error);
+        }
+    
     }
 }
 
