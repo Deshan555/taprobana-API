@@ -77,6 +77,30 @@ const FertilizerApprovalModal = {
             logger.error('Error in FertilizerApprovalModal.getOrderByGivenByFertilizerID', error);
             throw error;
         }
+    },
+    getOrdersWithPendingPaymentsAndApproved: async () => {
+        try {
+            return await query('SELECT * FROM fertilizerapproval WHERE PaymentStatus = ? AND ApprovalStatus = ? LIMIT 15', ['UNPAID', 'APPROVED']);
+        } catch (error) {
+            logger.error('Error in FertilizerApprovalModal.getOrdersWithPendingPaymentsAndApproved', error);
+            throw error;
+        }
+    },
+    needToReview: async () => {
+        try {
+            return await query('SELECT * FROM fertilizerapproval WHERE ApprovalStatus = ? AND PaymentStatus = ?', ['PENDING', 'UNPAID']);
+        } catch (error) {
+            logger.error('Error in FertilizerApprovalModal.getOrdersWithPendingPaymentsAndApproved', error);
+            throw error;
+        }
+    },
+    getFertilizerOrdersByFieldID: async (fieldID) => {
+        try {
+            return await query('SELECT * FROM fertilizerapproval WHERE FieldID = ?', [fieldID]);
+        } catch (error) {
+            logger.error('Error in FertilizerApprovalModal.getFertilizerOrdersByFieldID', error);
+            throw error;
+        }
     }
 }
 
