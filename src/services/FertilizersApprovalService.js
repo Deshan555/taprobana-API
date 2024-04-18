@@ -78,6 +78,33 @@ const FertilizersApprovalService = {
                 try {
                     const result = await FertilizerApprovalModal.rejectFertilizerOrder(ORDER_ID);
                     const getOrderByIDAfterUpdate = await FertilizerApprovalModal.getFertilizerApprovalByID(ORDER_ID);
+                    // SEND EMAIL
+                    const FertilizerID = getOrderByID[0]?.FertilizerID;
+                    const FieldID = getOrderByID[0]?.FieldID
+                    const getFertilizerInfo = await FertilizerInfoModel.getFertilizerInfoByID(FertilizerID).catch(err => {
+                        throw new Error(`Error getting fertilizer info: ${err.message}`);
+                    });
+                    const getFieldInfo = await FieldModel.getFieldInfoByID(FieldID).catch(err => {
+                        throw new Error(`Error getting field info: ${err.message}`);
+                    });
+                    const getCustomerInfo = await CustomerModel.getCustomerByID(getFieldInfo[0]?.OwnerID).catch(err => {
+                        throw new Error(`Error getting customer info: ${err.message}`);
+                    });
+                    const customerEmail = getCustomerInfo[0]?.CustomerEmail;
+                    try {
+                        const genarateEmailTemplate = TemplateProvider.generateOrderConfirmation(getOrderByIDAfterUpdate[0]);
+                        const email = {
+                            to: customerEmail,
+                            subject: 'Order Rejection',
+                            html: genarateEmailTemplate
+                        }
+                        await EmailService.sendSingleEmail(email).catch(err => {
+                            throw new Error(`Error sending email: ${err.message}`);
+                        });
+                        logger.info('Email sent successfully');
+                    } catch (error) {
+                        logger.error('Error sending email:', error);
+                    }
                     logger.info('Order updated successfully : ', getOrderByIDAfterUpdate);
                     successResponse(res, 'Order updated successfully', getOrderByIDAfterUpdate);
                 } catch (error) {
@@ -178,6 +205,16 @@ const FertilizersApprovalService = {
             errorResponse(res, 'Error Occurred while deleting order : ' + error);
         }
     },
+    dashboardPendingStatus: async (req, res) => {
+        try {
+            const results = await FertilizerApprovalModal.getOrdersWithPendingPaymentsAndApproved();
+            if (results.length === 0) return errorResponse(res, 'No Orders found', 404);
+            successResponse(res, 'Orders retrieved successfully', results)
+        } catch (error) {
+            logger.error('Error getting Orders:', error);
+            errorResponse(res, 'Error Occurred while fetching Orders : ' + error);
+        }
+    }
 }
 
 module.exports = FertilizersApprovalService;
