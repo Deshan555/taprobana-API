@@ -103,7 +103,7 @@ router.post('/dailyTeaCollection/bulkSum', DailyTeaCollectionController.getBulkC
 router.get('/dailyTeaCollection/fieldSumovertime/:FieldID', DailyTeaCollectionController.getCollectionSumByFieldIDFunc);
 router.post('/dailyTeaCollection/fieldSumByDateRange', DailyTeaCollectionController.getCollectionSumOverTimeRangeFunc);
 router.post('/dailyTeaCollection/fieldDataByDateRange', DailyTeaCollectionController.getCollectionByFieldIDandTimeRangeFunc);
-// router.post('/dailyTeaCollection/fieldSumByDateRangeAndZone', DailyTeaCollectionController.getSumOfSpecificFieldByDateRangeAndZone);
+router.post('/dailyTeaCollection/fieldSumByDateRangeAndZone', DailyTeaCollectionController.getCollectionByFieldIDandDateFunc);
 
 router.post('/dailyTeaCollection/add', DailyTeaCollectionController.addDailyTeaCollection);
 router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionController.getDailyTeaCollectionByID);
@@ -145,6 +145,7 @@ router.get('/fertilizers/order/getall', FertilizersApprovalService.getallOrdersL
 router.get('/fertilizers/order/getByFertilizerID/:FertilizerID', FertilizersApprovalService.getOrdersByFertilizerID);
 router.get('/fertilizers/order/dashboard/getPendingPayments', FertilizersApprovalService.dashboardPendingStatus);
 router.put('/fertilizers/order/admin/approve/:ORDER_ID', FertilizersApprovalService.orderApprovalByAdmin);
+router.put('/fertilizers/order/getAll/:fieldID', FertilizersApprovalService.getFertilizerOrdersByFieldID);
 
 
 
