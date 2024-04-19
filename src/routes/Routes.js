@@ -18,6 +18,7 @@ const LocationService = require('../services/LocationService');
 const EmailService = require('../services/MailService');
 const ChartsController = require('../services/Dashboards');
 const FertilizersApprovalService = require('../services/FertilizersApprovalService');
+const ComplaintsService = require('../services/ComplaintsService');
 
 
 // demo route list
@@ -105,6 +106,9 @@ router.post('/dailyTeaCollection/fieldSumByDateRange', DailyTeaCollectionControl
 router.post('/dailyTeaCollection/fieldDataByDateRange', DailyTeaCollectionController.getCollectionByFieldIDandTimeRangeFunc);
 router.post('/dailyTeaCollection/fieldSumByDateRangeAndZone', DailyTeaCollectionController.getCollectionByFieldIDandDateFunc);
 
+router.post('/dailyTeaCollection/getCollectionByDateAndRouteID', DailyTeaCollectionController.getCollectionByDateAndRouteID);
+router.post('/dailyTeaCollection/getCollectionSumInSpecificDateAndRouteIDFunc', DailyTeaCollectionController.getCollectionSumInSpecificDateAndRouteIDFunc);
+
 router.post('/dailyTeaCollection/add', DailyTeaCollectionController.addDailyTeaCollection);
 router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionController.getDailyTeaCollectionByID);
 router.put('/dailyTeaCollection/update/:DailyTeaCollectionID', DailyTeaCollectionController.updateDailyTeaCollection);
@@ -147,7 +151,11 @@ router.get('/fertilizers/order/dashboard/getPendingPayments', FertilizersApprova
 router.put('/fertilizers/order/admin/approve/:ORDER_ID', FertilizersApprovalService.orderApprovalByAdmin);
 router.get('/fertilizers/order/getAll/:fieldID', FertilizersApprovalService.getFertilizerOrdersByFieldID);
 
-
+// complaints services
+router.get('/complaints', ComplaintsService.getAllComplaints);
+router.post('/complaints/add', TokenAuth.authenticateToken('mobileApp'), ComplaintsService.addComplaint);
+router.put('/complaints/update/:ComplaintID', ComplaintsService.updateComplaint);
+router.delete('/complaints/drop/:ComplaintID', ComplaintsService.deleteComplaint);
 
 // dashboards stats
 router.get('/dashboard/stats', ChartsController.getDashboardStats);
