@@ -90,6 +90,21 @@ getCollectionSumByFieldID: async (FieldID) => {
         throw error;
     }
 },
+getCollectionListByDateAndRouteID: async (RouteID, TargetDate) => {
+    try {
+        return await query('SELECT * FROM dailyteacollection WHERE RouteID = ? AND CollectionDate = ?', [RouteID, TargetDate]);
+    } catch (error) {
+        throw error;
+    }
+},
+getCollectionSumInSpecificDateAndRouteID: async (RouteID, TargetDate) => {
+    try{
+        return await query('SELECT SUM(ActualTeaWeight) as TotalTeaWeight FROM dailyteacollection WHERE RouteID = ? AND CollectionDate = ?', [RouteID, TargetDate]);
+    } catch (error){
+        throw error;
+    }
+}
+
 };
 
 module.exports = DailyTeaCollectionModel;
