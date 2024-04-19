@@ -218,3 +218,13 @@ CREATE TABLE JWTTokensCustomer
     UserID  INT,
     FOREIGN KEY (UserID) REFERENCES Customers (CustomerID)
 );
+
+CREATE TABLE Complaints
+(
+    ComplaintID INT PRIMARY KEY AUTO_INCREMENT,
+    ComplaintDate DATE NOT NULL,
+    ComplaintDescription VARCHAR(255) NOT NULL,
+    ComplaintStatus ENUM('PENDING', 'RESOLVED') NOT NULL,
+    ComplaintType ENUM('BUG', 'SUGGESTION', 'COMPLAINT', 'DATA_ISSUE', 'APP_ISSUE', 'OTHER') NOT NULL,
+    ComplainerName VARCHAR(255) NOT NULL,
+);
