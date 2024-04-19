@@ -120,6 +120,7 @@ const AuthControl = {
                     const refreshTokenExpireDate = new Date(authenticatedTime.getTime() + 7 * 24 * 60 * 60 * 1000);
                     const userRole = empRole[0].RoleName;
                     const authEmplyeeID = results[0].EmployeeID;
+                    const employeeNameRegistered = results[0].EmployeeName;
                     const pushTokens = await JWTTokenModel.pushTokenEmployee(accessToken, refreshToken, results[0].EmployeeID);
                     if(pushTokens.affectedRows === 0) {
                         return errorResponse(res, 'Error Occurred while generating access token : ' + err);
@@ -130,7 +131,8 @@ const AuthControl = {
                             accessTokenExpireDate,
                             refreshTokenExpireDate,
                             userRole,
-                            authEmplyeeID                     
+                            authEmplyeeID,
+                            employeeNameRegistered                     
                         });
                     }
                 }
