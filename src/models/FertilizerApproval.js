@@ -29,6 +29,14 @@ const FertilizerApprovalModal = {
             throw error;
         }
     },
+    rejectOrdeByCustomer : async (ORDER_ID) => {
+        try {
+            return await query('UPDATE fertilizerapproval SET CustomerOrderStatus = ? WHERE ORDER_ID = ?', ['REJECTED', ORDER_ID]);
+        } catch (error) {
+            logger.error('Error in FertilizerApprovalModal.rejectOrdeByCustomer', error);
+            throw error;
+        }
+    },
     getFertilizerApprovalByID: async (ORDER_ID) => {
         try {
             return await query('SELECT * FROM fertilizerapproval WHERE ORDER_ID = ?', [ORDER_ID]);
