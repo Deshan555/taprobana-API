@@ -67,7 +67,7 @@ const FertilizerInfoController = {
             console.error('Error deleting fertilizerInfo:', error);
             errorResponse(res, 'Error Occurred while deleting fertilizerInfo : ' + error);
         }
-    }
+    },
 };
 
 module.exports = FertilizerInfoController;
