@@ -46,7 +46,7 @@ const CustomerModel = {
     },
     updateCustomerPassword: async (CustomerID, CustomerPassword) => {
         try {
-            const results = await query('UPDATE customers SET CustomerPassword = ? WHERE CustomerID = ?', [CustomerPassword, CustomerID]);
+            const results = await query('UPDATE customers SET Password = ? WHERE CustomerID = ?', [CustomerPassword, CustomerID]);
             return results;
         } catch (error) {
             throw error;
