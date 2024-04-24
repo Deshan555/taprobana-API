@@ -35,17 +35,21 @@ router.post('/auth/refreshCustomer', AuthController.newAuthTokenByRefreshTokenCu
 router.post('/auth/refreshEmployee', AuthController.newAuthTokenByRefreshTokenEmployee);
 
 // main endpoints for customer-Routes
-router.post('/customers/add', CustomerController.addCustomer);
-router.post('/customers/addBulk', CustomerController.addBulkCustomers);
+router.post('/customers/add', TokenAuth.authenticateToken('webAdmin'), CustomerController.addCustomer);
+router.post('/customers/addBulk', TokenAuth.authenticateToken('webAdmin'), CustomerController.addBulkCustomers);
 // router.get('/customers', TokenAuth.authenticateToken('fetchAllData'), CustomerController.getAllCustomers);
-router.get('/customers', CustomerController.getAllCustomers);
+router.get('/customers', TokenAuth.authenticateToken('all'), CustomerController.getAllCustomers);
 // router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken, CustomerController.getCustomerByID);
-router.get('/customers/getById/:CustomerID', CustomerController.getCustomerByID);
-router.get('/customers/getByEmail/:CustomerEmail', TokenAuth.authenticateToken, CustomerController.getCustomerByEmail);
+router.get('/customers/getById/:CustomerID', TokenAuth.authenticateToken('all'), CustomerController.getCustomerByID);
+router.get('/customers/getByEmail/:CustomerEmail', TokenAuth.authenticateToken('all'), TokenAuth.authenticateToken, CustomerController.getCustomerByEmail);
 // router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken,CustomerController.updateCustomer);
-router.put('/customers/update/:CustomerID', CustomerController.updateCustomer);
+router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken('all'), CustomerController.updateCustomer);
 // router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken, CustomerController.deleteCustomer);
-router.delete('/customers/drop/:CustomerID', CustomerController.deleteCustomer);
+router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken('webAdmin'), CustomerController.deleteCustomer);
+// updatePasswordCustomer
+router.put('/customers/updatePassword', TokenAuth.authenticateToken('all'), CustomerController.updatePasswordCustomer);
+
+router.put('/customer/forcePass', CustomerController.forcePasswordChange);
 
 // main endpoints for roles
 router.get('/roles', RoleController.getAllRoles);
@@ -55,14 +59,16 @@ router.put('/roles/update/:RoleID', RoleController.updateRole);
 router.delete('/roles/drop/:RoleID', RoleController.deleteRole);
 
 // main endpoints for employee-Routes
-router.get('/employees', EmployeeController.getAllEmployees);
-router.get('/employees/drivers', EmployeeController.driversWithNoVehicleMappings);
-router.get('/employees/collectors', EmployeeController.collectorsWithOutRoutingMapping);
-router.post('/employees/add', EmployeeController.addEmployee);
-router.post('/employees/addBulkEmployees', EmployeeController.addBulkEmployees);
+router.get('/employees', TokenAuth.authenticateToken('webAdmin'), EmployeeController.getAllEmployees);
+router.get('/employees/drivers', TokenAuth.authenticateToken('webAdmin'), EmployeeController.driversWithNoVehicleMappings);
+router.get('/employees/collectors', TokenAuth.authenticateToken('webAdmin'), EmployeeController.collectorsWithOutRoutingMapping);
+router.post('/employees/add', TokenAuth.authenticateToken('webAdmin'), EmployeeController.addEmployee);
+router.post('/employees/addBulkEmployees', TokenAuth.authenticateToken('webAdmin'), EmployeeController.addBulkEmployees);
 router.get('/employees/:EmployeeID', TokenAuth.authenticateToken('empProfile'), EmployeeController.getEmployeeByID);
-router.put('/employees/update/:EmployeeID', EmployeeController.updateEmployee);
-router.delete('/employees/drop/:EmployeeID', EmployeeController.deleteEmployee);
+router.put('/employees/update/:EmployeeID', TokenAuth.authenticateToken('webAdmin'), EmployeeController.updateEmployee);
+router.delete('/employees/drop/:EmployeeID', TokenAuth.authenticateToken('webAdmin'), EmployeeController.deleteEmployee);
+
+router.put('/employee/passUpdate', TokenAuth.authenticateToken('empProfile'), EmployeeController.employeePasswordUpdate);
 
 // main endpoints for region-Routes
 router.get('/regions', RegionController.getAllRegions);
@@ -86,11 +92,11 @@ router.put('/environmentalists/update/:EnvironmentalZoneID', EnvironmentalZoneCo
 router.delete('/environmentalists/drop/:EnvironmentalZoneID', EnvironmentalZoneController.deleteEnvironmentalZone);
 
 // main endpoints for vehicle-Routes
-router.get('/vehicles', VehicleController.getAllVehicleMappings);
-router.post('/vehicles/add', VehicleController.addVehicleMappings);
-router.get('/vehicles/:VehicleID', VehicleController.getAllVehicleMappingsByID);
-router.put('/vehicles/update/:VehicleID', VehicleController.updateVehicleMappings);
-router.delete('/vehicles/drop/:VehicleID', VehicleController.deleteVehicleMappings);
+router.get('/vehicles', TokenAuth.authenticateToken('webAdmin'), VehicleController.getAllVehicleMappings);
+router.post('/vehicles/add', TokenAuth.authenticateToken('webAdmin'), VehicleController.addVehicleMappings);
+router.get('/vehicles/:VehicleID', TokenAuth.authenticateToken('webAdmin'), VehicleController.getAllVehicleMappingsByID);
+router.put('/vehicles/update/:VehicleID', TokenAuth.authenticateToken('webAdmin'), VehicleController.updateVehicleMappings);
+router.delete('/vehicles/drop/:VehicleID', TokenAuth.authenticateToken('webAdmin'), VehicleController.deleteVehicleMappings);
 
 // main endpoints for dailyTeaCollection-Routes
 router.get('/dailyTeaCollection', DailyTeaCollectionController.getAllDailyTeaCollection);
@@ -114,22 +120,25 @@ router.get('/dailyTeaCollection/:DailyTeaCollectionID', DailyTeaCollectionContro
 router.put('/dailyTeaCollection/update/:DailyTeaCollectionID', DailyTeaCollectionController.updateDailyTeaCollection);
 router.delete('/dailyTeaCollection/drop/:DailyTeaCollectionID', DailyTeaCollectionController.deleteDailyTeaCollection);
 
+router.get('/dailyTeaCollection/getByMonthlyCount/:FieldID', DailyTeaCollectionController.getTeaCollectionSUMBy12MonthesFunc);
+
 // main endpoints for fertilizer-Routes
-router.get('/fertilizers', FertilizerController.getAllFertilizerInfo);
-router.post('/fertilizers/add', FertilizerController.addFertilizerInfo);
-router.get('/fertilizers/:FertilizerID', FertilizerController.getFertilizerInfoByID);
-router.put('/fertilizers/update/:FertilizerID', FertilizerController.updateFertilizerInfo);
-router.delete('/fertilizers/drop/:FertilizerID', FertilizerController.deleteFertilizerInfo);
+router.get('/fertilizers', TokenAuth.authenticateToken('all'), FertilizerController.getAllFertilizerInfo);
+router.post('/fertilizers/add', TokenAuth.authenticateToken('webAdmin'), FertilizerController.addFertilizerInfo);
+router.get('/fertilizers/:FertilizerID', TokenAuth.authenticateToken('all'), FertilizerController.getFertilizerInfoByID);
+router.put('/fertilizers/update/:FertilizerID', TokenAuth.authenticateToken('webAdmin'), FertilizerController.updateFertilizerInfo);
+router.delete('/fertilizers/drop/:FertilizerID', TokenAuth.authenticateToken('webAdmin'), FertilizerController.deleteFertilizerInfo);
 
 // main endpoints for fieldInfo-Routes
-router.get('/fieldInfo', FieldInfoController.getAllFieldInfos);
-router.post('/fieldInfo/add', FieldInfoController.addFieldInfo);
-router.get('/fieldInfo/:FieldID', FieldInfoController.getFieldInfoByID);
-router.put('/fieldInfo/update/:FieldID', FieldInfoController.updateFieldInfo);
-router.delete('/fieldInfo/drop/:FieldID', FieldInfoController.deleteFieldInfo);
-router.get('/fieldInfo/getByZoneID/:zoneID', FieldInfoController.getFieldsByZoneID);
-router.get('/fieldInfo/getByFactoryID/:factoryID', FieldInfoController.getFieldsByFactoryID);
-router.get('/fieldInfo/getByRouteID/:routeID', TokenAuth.authenticateToken('mobileApp'), FieldInfoController.getFieldsByRouteID);
+router.get('/fieldInfo', TokenAuth.authenticateToken('all'), FieldInfoController.getAllFieldInfos);
+router.post('/fieldInfo/add', TokenAuth.authenticateToken('all'), FieldInfoController.addFieldInfo);
+router.get('/fieldInfo/:FieldID', TokenAuth.authenticateToken('all'), FieldInfoController.getFieldInfoByID);
+router.put('/fieldInfo/update/:FieldID', TokenAuth.authenticateToken('all'), FieldInfoController.updateFieldInfo);
+router.delete('/fieldInfo/drop/:FieldID', TokenAuth.authenticateToken('all'), FieldInfoController.deleteFieldInfo);
+router.get('/fieldInfo/getByZoneID/:zoneID', TokenAuth.authenticateToken('all'), FieldInfoController.getFieldsByZoneID);
+router.get('/fieldInfo/getByFactoryID/:factoryID', TokenAuth.authenticateToken('all'), FieldInfoController.getFieldsByFactoryID);
+router.get('/fieldInfo/getByRouteID/:routeID', TokenAuth.authenticateToken('all'), FieldInfoController.getFieldsByRouteID);
+router.get('/fieldInfo/getByFieldListByUID/:OwnerID', TokenAuth.authenticateToken('all'), FieldInfoController.getFieldListByUserID);
 
 // main endpoints for roadRouting-Routes
 router.get('/roadRouting', RoadRoutingController.gatAllRoadRouting);
@@ -150,6 +159,7 @@ router.get('/fertilizers/order/getByFertilizerID/:FertilizerID', FertilizersAppr
 router.get('/fertilizers/order/dashboard/getPendingPayments', FertilizersApprovalService.dashboardPendingStatus);
 router.put('/fertilizers/order/admin/approve/:ORDER_ID', FertilizersApprovalService.orderApprovalByAdmin);
 router.get('/fertilizers/order/getAll/:fieldID', FertilizersApprovalService.getFertilizerOrdersByFieldID);
+router.put('/fertilizers/order/reject/:ORDER_ID', FertilizersApprovalService.rejectOrderByRequester);
 
 // complaints services
 router.get('/complaints', ComplaintsService.getAllComplaints);
