@@ -1,8 +1,10 @@
+require('dotenv').config();
+const { hashPassword, comparePassword } = require('../utils/bcrypt');
+const { successResponse, errorResponse } = require('../utils/responseUtils');
+const bcrypt = require('../utils/bcrypt');
 const EmployeeModel = require('../models/Employees');
 const FactoryModel = require('../models/Factory');
 const RoleModel = require('../models/Roles');
-const { successResponse, errorResponse } = require('../utils/responseUtils');
-const {hashPassword} = require("../utils/bcrypt");
 const logger = require('../config/logger');
 const EmailService = require('../services/MailService');
 const TemplateProvider = require('../services/TemplateProvider');
@@ -224,6 +226,32 @@ const EmployeeController = {
         } catch (error) {
             console.error('Error getting collectors with no routing mappings:', error);
             errorResponse(res, 'Error Occurred while fetching collectors with no routing mappings : '+error);
+        }
+    },
+    employeePasswordUpdate : async (req, res) => {
+        const {EmployeeID, newPassword, oldPassword, email} = req.body;
+
+        console.log(EmployeeID, newPassword, oldPassword, email);
+        try{
+            const results = await EmployeeModel.getEmployeeByEmail(email);
+            let passwordFromDataBase = '';
+            if(results.length === 0)
+                return errorResponse(res, 'Can Not Find Employee With Given Email Address', 404);
+            else
+                passwordFromDataBase = results[0].Password;
+                const passwordMatch = await bcrypt.comparePassword(oldPassword, passwordFromDataBase);
+                if(passwordMatch === false)
+                    return errorResponse(res, 'Invalid Credentials, Old Wrong Password Provided', 401);
+
+                const hashedPassword = await bcrypt.hashPassword(newPassword);
+                const updateResult = await EmployeeModel.updateEmployeePassword(EmployeeID, hashedPassword);
+                if(updateResult?.affectedRows === 0)
+                    return errorResponse(res, 'Error Updating Password', 500);
+                successResponse(res, 'Password Updated Successfully', null);
+        }
+        catch (error) {
+            console.error('Error getting employee by email:', error);
+            errorResponse(res, 'Error Occurred while fetching employee by email : '+error);
         }
     }
 };
