@@ -40,7 +40,19 @@ const policies = [
         role: ['ROLE.ADMIN', 'ROLE.COLLECTOR'],
         action: 'CREATE',
         attributes: ['*']
-    }
+    },
+    {
+        policyName: 'webAdmin',
+        role: ['ROLE.ADMIN', 'ROLE.COLLECTOR'],
+        action: 'GLOBLE',
+        attributes: ['*']
+    },
+    {
+        policyName: 'all',
+        role: ['ROLE.ADMIN', 'ROLE.CUSTOMER', 'ROLE.EMPLOYEE', 'ROLE.DRIVER', 'ROLE.COLLECTOR'],
+        action: 'READ',
+        attributes: ['*']
+    },
 ];
 
 function getPolicyByName(policyName) {
