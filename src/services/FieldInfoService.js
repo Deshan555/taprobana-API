@@ -152,6 +152,22 @@ const FieldInfoController = {
             logger.error('Error getting fieldInfo by FactoryID:', error);
             errorResponse(res, 'Error Occurred while fetching fieldInfo by FactoryID : ' + error);
         }
+    },
+    getFieldListByUserID: async (req, res) => {
+        const {OwnerID} = req.params;
+        try{
+            const response = await FieldInfoModel.fieldListByUserID(OwnerID);
+            try{
+                if(response.length === 0) return errorResponse(res, 'FieldInfo not found', 404);
+                successResponse(res, 'FieldInfo retrieved successfully', response);
+            } catch (error){
+                logger.error('Error getting fieldInfo by UserID:', error);
+                errorResponse(res, 'Error Occurred while fetching fieldInfo by UserID : ' + error);
+            }
+        } catch (error){
+            logger.error('Error getting fieldInfo by UserID:', error);
+            errorResponse(res, 'Error Occurred while fetching fieldInfo by UserID : ' + error);
+        }
     }
 };
 
