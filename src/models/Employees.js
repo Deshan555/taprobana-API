@@ -26,6 +26,13 @@ const EmployeeModel = {
             logger.error('Error getting Employee by Email:', error);
         }
     },
+    updateEmployeePassword: async (EmployeeID, Password) => {
+        try {
+            return await query('UPDATE employees SET Password = ? WHERE EmployeeID = ?', [Password, EmployeeID]);
+        } catch (error) {
+            logger.error('Error updating Employee Password:', error);
+        }
+    },
     getEmployeeByID: async (EmployeeID) => {
         try {
             return await query('SELECT * FROM employees WHERE EmployeeID = ?', [EmployeeID]);
