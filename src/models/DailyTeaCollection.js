@@ -103,6 +103,13 @@ getCollectionSumInSpecificDateAndRouteID: async (RouteID, TargetDate) => {
     } catch (error){
         throw error;
     }
+},
+getTeaCollectionSUMBy12Monthes: async (FieldID) => {
+    try {
+        return await query('SELECT SUM(ActualTeaWeight) as TotalTeaWeight, MONTH(CollectionDate) as Month FROM dailyteacollection WHERE FieldID = ? GROUP BY MONTH(CollectionDate)', [FieldID]);
+    } catch (error) {
+        throw error;
+    }
 }
 
 };
