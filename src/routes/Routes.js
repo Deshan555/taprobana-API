@@ -48,7 +48,6 @@ router.put('/customers/update/:CustomerID', TokenAuth.authenticateToken('all'), 
 router.delete('/customers/drop/:CustomerID', TokenAuth.authenticateToken('webAdmin'), CustomerController.deleteCustomer);
 // updatePasswordCustomer
 router.put('/customers/updatePassword', TokenAuth.authenticateToken('all'), CustomerController.updatePasswordCustomer);
-
 router.put('/customer/forcePass', CustomerController.forcePasswordChange);
 
 // main endpoints for roles
@@ -67,7 +66,6 @@ router.post('/employees/addBulkEmployees', TokenAuth.authenticateToken('webAdmin
 router.get('/employees/:EmployeeID', TokenAuth.authenticateToken('empProfile'), EmployeeController.getEmployeeByID);
 router.put('/employees/update/:EmployeeID', TokenAuth.authenticateToken('webAdmin'), EmployeeController.updateEmployee);
 router.delete('/employees/drop/:EmployeeID', TokenAuth.authenticateToken('webAdmin'), EmployeeController.deleteEmployee);
-
 router.put('/employee/passUpdate', TokenAuth.authenticateToken('empProfile'), EmployeeController.employeePasswordUpdate);
 
 // main endpoints for region-Routes
